@@ -92,7 +92,8 @@ function download_tails() {
 	echo "Importing tails GPG key..."
 	gpg --import "$download_dir/tails/tails-signing.key"
 	echo "downloading Tails ISO image"
-	wget -N -nv --show-progress -P "$download_dir/tails/" "$tails_iso_url"
+	#Force HTTPS but ignore certificate checks since Tails CDN can point to other servers than dl.amnesia.boum.org
+	wget --no-check-certificate -N -nv --show-progress -P "$download_dir/tails/" "$tails_iso_url"
 	echo "verifying Tails signature..."
 	tails_sig_filename="tails-${tails_architecture}-${tails_version}.iso.sig"
 	tails_iso_filename="tails-${tails_architecture}-${tails_version}.iso"
