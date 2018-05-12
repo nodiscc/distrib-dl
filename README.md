@@ -36,7 +36,6 @@ Architectures and distribution versions are configurable in the script itself.
 * add support for Proxmox VE
 * support other distros (arch/ubuntu/mint/zorin/alpine/android-x86/fedora/dban/gentoo...)
 * support downloading via bittorrent/transmission-cli
-* centos: make version configurable
 * centos: do not hardcode mirror, let centos.org take us to the closest download
 * add support for windows 10
 * add support for androidx86
