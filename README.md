@@ -50,7 +50,7 @@ Architectures and distribution versions are configurable in the script itself.
 * Integrate with https://github.com/thias/glim
 * add support for debian netinstall to glim
 * add support for tails and centos in main glim grub configuration
-
+* add support for debian live including non-free firmware https://cdimage.debian.org/images/unofficial/non-free/images-including-firmware/current-live/
 
 ## License
 

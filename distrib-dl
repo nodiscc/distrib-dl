@@ -107,7 +107,7 @@ function download_kali() {
 	if [[ ! -d "$download_dir/kali/" ]]; then mkdir -p "$download_dir/kali/"; fi
 	echo "Downloading Kali checksums, key and signature..."
 	wget -N -nv --show-progress -P "$download_dir/kali/" "$kali_base_url/SHA256SUMS"
-	wget -N -nv --show-progress -P "$download_dir/kali/" "$kali_base_url/SHA256SUMS.gpg"
+	wget -nv --show-progress -O "$download_dir/kali/SHA256SUMS.gpg" "$kali_base_url/SHA256SUMS.gpg"
 	wget -N -nv --show-progress -P "$download_dir/kali/" "$kali_key_url"
 	echo "Importing Kali GPG key..."
 	gpg --import "$download_dir/kali/archive-key.asc"
