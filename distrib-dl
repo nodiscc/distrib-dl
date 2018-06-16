@@ -23,6 +23,8 @@ kali_version="2018.2"
 ### CENTOS
 centos_version_major="7"
 centos_version_minor="1804"
+### PROXMOX
+proxmox_version="5.2-1"
 
 ############################
 
@@ -119,11 +121,21 @@ function download_kali() {
 	cd "$download_dir/kali/" && sha256sum -c <(grep "$kali_iso_filename" SHA256SUMS) && cd -
 }
 
+function download_proxmox {
+    # No list of available ISOs https://forum.proxmox.com/threads/wget-pmg-iso.42113/
+    # https://www.proxmox.com/en/downloads/category/iso-images-pve
+    # TODO checksums/gpg verify download
+	if [[ ! -d "$download_dir/kali/" ]]; then mkdir -p "$download_dir/kali/"; fi
+    proxmox_base_url="https://www.proxmox.com/images/download/pve/iso/"
+    wget -N -nv --show-progress -P "$download_dir/proxmox/" "$proxmox_base_url/proxmox-ve_$proxmox_version.iso"
+}
+
 function _main() {
 	if [[ "$@" =~ "debian" ]] ; then download_debian; cli="1"; fi
 	if [[ "$@" =~ "centos" ]] ; then download_centos; cli="1"; fi
 	if [[ "$@" =~ "tails" ]] ; then download_tails; cli="1"; fi
 	if [[ "$@" =~ "kali" ]] ; then download_kali; cli="1"; fi
+	if [[ "$@" =~ "proxmox" ]] ; then download_proxmox; cli="1"; fi
 	if [[ ! "$cli" = "1" ]]; then echo "Usage: $usage"; exit 1; fi
 }
 

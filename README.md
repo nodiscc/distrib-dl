@@ -16,9 +16,10 @@ Useful to maintain a local ISO image repository.
 
 ## Usage
 
-`./distrib-dl DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...]`
+`./distrib-dl DISTRIBUTION1 [debian centos tails kali proxmox]`
 
-Currently supports `debian`, `centos`, `tails`, `kali`.
+Currently supports [Debian GNU/Linux](https://www.debian.org/), [CentOS](https://www.centos.org/, [Tails](https://tails.boum.org/), [Kali](https://www.kali.org/), [Proxmox VE](https://pve.proxmox.com/wiki/Main_Page)
+
 
 ## Configuration
 
@@ -44,7 +45,7 @@ Architectures and distribution versions are configurable in the script itself.
 * add support for ubuntu
 * add support for freebsd
 * add support for openbsd
-* add support for proxmox VE
+* add GPG/checksum verifications for proxmox
 * add support for pfsense
 * add support for windows 10
 * Integrate with https://github.com/thias/glim
