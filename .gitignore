@@ -3,3 +3,4 @@ debian/firmware-9.4.0-amd64-i386-netinst.iso
 kali/kali-linux-2018.2-amd64.iso
 tails/tails-amd64-3.7.1.iso
 proxmox/proxmox-ve_5.2-1.iso
+pfsense/pfSense-CE-memstick-2.4.3-RELEASE-amd64.img.gz

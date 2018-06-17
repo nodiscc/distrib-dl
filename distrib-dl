@@ -25,6 +25,9 @@ centos_version_major="7"
 centos_version_minor="1804"
 ### PROXMOX
 proxmox_version="5.2-1"
+### PFSENSE
+pfsense_version="2.4.3"
+pfsense_installer_type="vga" #serial or vga
 
 ############################
 
@@ -130,12 +133,36 @@ function download_proxmox {
     wget -N -nv --show-progress -P "$download_dir/proxmox/" "$proxmox_base_url/proxmox-ve_$proxmox_version.iso"
 }
 
+function download_pfsense {
+    # TODO add other architectures (currently only amd64 supported)
+	# New York mirror (disabled)
+	#pfsense_base_url="https://nyifiles.pfsense.org/mirror/downloads"
+	# Frankfurt mirror (disabled)
+	#pfsense_base_url="https://frafiles.pfsense.org/mirror/downloads"
+	# Main site
+	pfsense_base_url="https://files.pfsense.org/mirror/downloads"
+	if [[ "$pfsense_installer_type" == "serial" ]]; then pfsense_is_serial="serial-"
+	    elif [[ "$pfsense_installer_type" == "vga" ]]; then pfsense_is_serial=""
+	    else echo "[distrib-dl] ERROR: invalid installer type for pfsense: $pfsense_installer_type"; exit 1
+	fi
+	pfsense_iso_filename="pfSense-CE-memstick-${pfsense_is_serial}${pfsense_version}-RELEASE-amd64.img.gz"
+	pfsense_hashes_base_url="https://files.pfsense.org/hashes/"
+	if [[ ! -d "$download_dir/pfsense/" ]]; then mkdir -p "$download_dir/pfsense/"; fi
+	echo "[distrib-dl] INFO: downloading pfsense checksums..."
+	wget -N -nv --show-progress -P "$download_dir/pfsense/" "${pfsense_hashes_base_url}/${pfsense_iso_filename}.sha256"
+    echo "[distrib-dl] INFO: downloading pfsense ISO image..."
+	wget -N -nv --show-progress -P "$download_dir/pfsense/" "${pfsense_base_url}/${pfsense_iso_filename}"
+    echo "[distrib-dl] INFO: verifying pfsense ISO image integrity..."
+	cd "$download_dir/pfsense" && sha256sum --check "pfSense-CE-memstick-${pfsense_is_serial}${pfsense_version}-RELEASE-amd64.img.gz.sha256"
+}
+
 function _main() {
 	if [[ "$@" =~ "debian" ]] ; then download_debian; cli="1"; fi
 	if [[ "$@" =~ "centos" ]] ; then download_centos; cli="1"; fi
 	if [[ "$@" =~ "tails" ]] ; then download_tails; cli="1"; fi
 	if [[ "$@" =~ "kali" ]] ; then download_kali; cli="1"; fi
 	if [[ "$@" =~ "proxmox" ]] ; then download_proxmox; cli="1"; fi
+	if [[ "$@" =~ "pfsense" ]] ; then download_pfsense; cli="1"; fi
 	if [[ ! "$cli" = "1" ]]; then echo "Usage: $usage"; exit 1; fi
 }
 
