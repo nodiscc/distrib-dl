@@ -1,7 +1,7 @@
 # distrib-dl
 
-Download and verify Linux distribution ISO images/installers.  
-Downloads will be verified against checksums and GPG keys.
+Download and keep up-to-date Linux distribution ISO images/installers.  
+Downloads will be verified against checksums and GPG keys.  
 Useful to maintain a local ISO image repository.  
 
 ## Installation
@@ -16,9 +16,9 @@ Useful to maintain a local ISO image repository.
 
 ## Usage
 
-`./distrib-dl DISTRIBUTION1 [debian centos tails kali proxmox pfsense]`
+`./distrib-dl DISTRIBUTION1 [debian] [centos] [tails] [kali] [proxmox] [pfsense]`
 
-Currently supports [Debian GNU/Linux](https://www.debian.org/), [CentOS](https://www.centos.org/, [Tails](https://tails.boum.org/), [Kali](https://www.kali.org/), [Proxmox VE](https://pve.proxmox.com/wiki/Main_Page), [pfSense](https://www.pfsense.org/download/)
+Currently supports [Debian GNU/Linux](https://www.debian.org/), [CentOS](https://www.centos.org/), [Tails](https://tails.boum.org/), [Kali](https://www.kali.org/), [Proxmox VE](https://pve.proxmox.com/wiki/Main_Page), [pfSense](https://www.pfsense.org/download/)
 
 
 ## Configuration
