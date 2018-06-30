@@ -47,11 +47,15 @@ Architectures and distribution versions are configurable in the script itself.
 * centos: do not hardcode mirror, let centos.org take us to the closest download
 * add support for android-x86
 * add support for Debian Live
-* add support for archlinux
-* add support for fedora
-* add support for ubuntu
-* add support for freebsd
-* add support for openbsd
+* add support for [Arch Linux](https://www.archlinux.org/)
+* add support for [GuixSD](https://www.gnu.org/software/guix/)
+* add support for [NixOS Linux](https://nixos.org/)
+* add support for [Gentoo Linux](https://www.gentoo.org/)
+* add support for [Fedora](https://getfedora.org/)
+* add support for [Ubuntu](https://www.ubuntu.com/)
+* add support for [FreeBSD](https://www.freebsd.org/)
+* add support for [OpenBSD](https://www.openbsd.org/)
+* add support for [Lakka](https://www.lakka.tv/)
 * add GPG/checksum verifications for proxmox
 * add support for windows 10
 * Integrate with https://github.com/thias/glim
