@@ -35,7 +35,7 @@ set -e
 cli="0"
 download_dir="$PWD"
 usage="$0 DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...]
-Available distributions: debian centos tails kali"
+Available distributions: debian centos tails kali proxmox pfsense"
 
 ############################
 
