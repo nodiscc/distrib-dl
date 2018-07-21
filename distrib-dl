@@ -50,8 +50,8 @@ function download_debian() {
 	debian_sums_sign_url="${debian_base_url}/SHA512SUMS.sign"
 	if [[ ! -d "$download_dir/debian/" ]]; then mkdir -p "$download_dir/debian/"; fi
 	echo "Downloading Debian checksums and signature..."
-	wget --continue -N -nv --show-progress -P "$download_dir/debian/" "$debian_sums_url"
-	wget --continue -N -nv --show-progress -P "$download_dir/debian/" "$debian_sums_sign_url"
+	wget -N -nv --show-progress -P "$download_dir/debian/" "$debian_sums_url"
+	wget -N -nv --show-progress -P "$download_dir/debian/" "$debian_sums_sign_url"
 	echo "Verifying Debian signature..."
 	gpg --verify "$download_dir/debian/SHA512SUMS.sign" "$download_dir/debian/SHA512SUMS"
 	echo "Downloading Debian ISO image..."
