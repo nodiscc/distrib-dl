@@ -1,0 +1,8 @@
+test:
+  script:
+  - apt-get update -qy
+  - apt-get install -y shellcheck cloc
+  - cloc --vcs=git .
+  - export LC_ALL=C.UTF-8
+  - export LANG=C.UTF-8
+  - shellcheck distrib-dl
