@@ -26,7 +26,7 @@ centos_version_minor="1804"
 ### PROXMOX
 proxmox_version="5.2-1"
 ### PFSENSE
-pfsense_version="2.4.3"
+pfsense_version="2.4.4"
 pfsense_installer_type="vga" #serial or vga
 
 ############################
