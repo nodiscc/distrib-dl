@@ -22,7 +22,7 @@ kali_architecture="amd64"
 kali_version="2018.2"
 ### CENTOS
 centos_version_major="7"
-centos_version_minor="1804"
+centos_version_minor="1810"
 ### PROXMOX
 proxmox_version="5.2-1"
 ### PFSENSE
