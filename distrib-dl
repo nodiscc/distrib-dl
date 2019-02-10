@@ -16,10 +16,10 @@ debian_architecture="amd64-i386"
 debian_version="9.7.0"
 ### TAILS
 tails_architecture="amd64"
-tails_version="3.11"
+tails_version="3.12"
 ### KALI
 kali_architecture="amd64"
-kali_version="2018.2"
+kali_version="2018.4"
 ### CENTOS
 centos_version_major="7"
 centos_version_minor="1810"
