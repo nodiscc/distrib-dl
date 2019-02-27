@@ -2,5 +2,5 @@ centos/CentOS-7-x86_64-Minimal-1810.iso
 debian/firmware-9.8.0-amd64-i386-netinst.iso
 kali/kali-linux-2018.4-amd64.iso
 tails/tails-amd64-3.12.1.iso
-proxmox/proxmox-ve_5.2-1.iso
+proxmox/proxmox-ve_5.3-2.iso
 pfsense/pfSense-CE-memstick-2.4.4-RELEASE-amd64.img.gz
