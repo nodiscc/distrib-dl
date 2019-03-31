@@ -28,6 +28,8 @@ proxmox_version="5.3-2"
 ### PFSENSE
 pfsense_version="2.4.4"
 pfsense_installer_type="vga" #serial or vga
+### FREEBSD
+freebsd_version="12.0"
 
 ############################
 
@@ -35,7 +37,7 @@ set -e
 cli="0"
 download_dir="$PWD"
 usage="$0 DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...]
-Available distributions: debian centos tails kali proxmox pfsense"
+Available distributions: debian centos tails kali proxmox pfsense freebsd"
 
 ############################
 
@@ -157,6 +159,23 @@ function download_pfsense {
 	cd "$download_dir/pfsense" && sha256sum --check "pfSense-CE-memstick-${pfsense_is_serial}${pfsense_version}-RELEASE-amd64.img.gz.sha256"
 }
 
+function download_freebsd() {
+	freebsd_base_url="https://download.freebsd.org/ftp/releases/amd64/amd64/ISO-IMAGES/${freebsd_version}"
+	freebsd_iso_filename="FreeBSD-${freebsd_version}-RELEASE-amd64-memstick.img"
+	freebsd_sums_filename="CHECKSUM.SHA512-FreeBSD-${freebsd_version}-RELEASE-amd64.asc"
+	freebsd_sums_url="https://www.freebsd.org/releases/${freebsd_version}R/${freebsd_sums_filename}"
+	freebsd_gpgkeyring_url="https://www.freebsd.org/doc/pgpkeyring.txt"
+	if [[ ! -d "$download_dir/freebsd/" ]]; then mkdir -p "$download_dir/freebsd/"; fi
+	echo "Downloading freebsd keyring, checksums and signature..."
+	wget -N -nv --show-progress -P "$download_dir/freebsd/" "$freebsd_gpgkeyring_url"
+	wget -N -nv --show-progress -P "$download_dir/freebsd/" "$freebsd_sums_url"
+	gpg --verify "freebsd/$freebsd_sums_filename"
+	echo "Downloading freebsd ISO image..."
+	wget --continue -N -nv --show-progress -P "$download_dir/freebsd/" "$freebsd_base_url/$freebsd_iso_filename"
+	echo "Verifying freebsd ISO image integrity..."
+	cd "$download_dir/freebsd/" && sha512sum --ignore-missing -c <(cat ${freebsd_sums_filename}) && cd -
+}
+
 function _main() {
 	if [[ "$@" =~ "debian" ]] ; then download_debian; cli="1"; fi
 	if [[ "$@" =~ "centos" ]] ; then download_centos; cli="1"; fi
@@ -164,6 +183,7 @@ function _main() {
 	if [[ "$@" =~ "kali" ]] ; then download_kali; cli="1"; fi
 	if [[ "$@" =~ "proxmox" ]] ; then download_proxmox; cli="1"; fi
 	if [[ "$@" =~ "pfsense" ]] ; then download_pfsense; cli="1"; fi
+	if [[ "$@" =~ "freebsd" ]] ; then download_freebsd; cli="1"; fi
 	if [[ ! "$cli" = "1" ]]; then echo "Usage: $usage"; exit 1; fi
 }
 

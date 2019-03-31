@@ -1,6 +1,6 @@
 # distrib-dl
 
-Download and keep up-to-date Linux distribution ISO images/installers.  
+Download and keep up-to-date Linux/BSD distribution ISO images/installers.  
 Downloads will be verified against checksums and GPG keys.  
 Useful to maintain a local ISO image repository.  
 
@@ -18,7 +18,7 @@ Useful to maintain a local ISO image repository.
 
 ```
 ./distrib-dl DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...]
-Available distributions: debian centos tails kali proxmox pfsense
+Available distributions: debian centos tails kali proxmox pfsense freebsd
 ```
 
 * [Debian GNU/Linux](https://www.debian.org/)
@@ -27,6 +27,7 @@ Available distributions: debian centos tails kali proxmox pfsense
 * [Kali](https://www.kali.org/)
 * [Proxmox VE](https://pve.proxmox.com/wiki/Main_Page)
 * [pfSense](https://www.pfsense.org/download/)
+* [FreeBSD](https://www.freebsd.org/)
 
 
 ## Configuration
@@ -55,7 +56,6 @@ Architectures and distribution versions are configurable in the script itself.
 * add support for [Gentoo Linux](https://www.gentoo.org/)
 * add support for [Fedora](https://getfedora.org/)
 * add support for [Ubuntu](https://www.ubuntu.com/)
-* add support for [FreeBSD](https://www.freebsd.org/)
 * add support for [OpenBSD](https://www.openbsd.org/)
 * add support for [Lakka](https://www.lakka.tv/)
 * add GPG/checksum verifications for proxmox
