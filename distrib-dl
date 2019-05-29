@@ -156,7 +156,7 @@ function download_pfsense {
     echo "[distrib-dl] INFO: downloading pfsense ISO image..."
 	wget --continue -N -nv --show-progress -P "$download_dir/pfsense/" "${pfsense_base_url}/${pfsense_iso_filename}"
     echo "[distrib-dl] INFO: verifying pfsense ISO image integrity..."
-	cd "$download_dir/pfsense" && sha256sum --check "pfSense-CE-memstick-${pfsense_is_serial}${pfsense_version}-RELEASE-amd64.img.gz.sha256"
+	cd "$download_dir/pfsense" && sha256sum --check "pfSense-CE-memstick-${pfsense_is_serial}${pfsense_version}-RELEASE-amd64.img.gz.sha256" && cd -
 }
 
 function download_freebsd() {
