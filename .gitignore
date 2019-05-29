@@ -1,7 +1,7 @@
 centos/CentOS-7-x86_64-Minimal-1810.iso
-debian/firmware-9.8.0-amd64-i386-netinst.iso
+debian/firmware-9.9.0-amd64-i386-netinst.iso
 kali/kali-linux-2018.4-amd64.iso
-tails/tails-amd64-3.13.1.iso
+tails/tails-amd64-3.14.iso
 proxmox/proxmox-ve_5.3-2.iso
 pfsense/pfSense-CE-memstick-2.4.4-RELEASE-amd64.img.gz
 freebsd/FreeBSD-12.0-RELEASE-amd64-memstick.img
