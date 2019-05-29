@@ -58,6 +58,8 @@ Architectures and distribution versions are configurable in the script itself.
 * add support for [Ubuntu](https://www.ubuntu.com/)
 * add support for [OpenBSD](https://www.openbsd.org/)
 * add support for [Lakka](https://www.lakka.tv/)
+* add support for [Sparky Linux](https://sparkylinux.org/)
+* add support for [Bedrock Linux](https://bedrocklinux.org/)
 * add GPG/checksum verifications for proxmox
 * add support for windows 10
 * Integrate with https://github.com/thias/glim
