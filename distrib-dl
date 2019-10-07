@@ -22,7 +22,7 @@ kali_architecture="amd64"
 kali_version="2018.4"
 ### CENTOS
 centos_version_major="7"
-centos_version_minor="1810"
+centos_version_minor="1908"
 ### PROXMOX
 # https://www.proxmox.com/en/downloads/category/iso-images-pve
 proxmox_version="6.0-1"
