@@ -53,12 +53,12 @@ function download_debian() {
 	debian_sums_sign_url="${debian_base_url}/SHA512SUMS.sign"
 	if [[ ! -d "$download_dir/debian/" ]]; then mkdir --directory-prefix="$download_dir/debian/"; fi
 	echo "Downloading Debian checksums and signature..."
-	wget --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/debian/" "$debian_sums_url"
-	wget --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/debian/" "$debian_sums_sign_url"
+	wget $wget_opts --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/debian/" "$debian_sums_url"
+	wget $wget_opts --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/debian/" "$debian_sums_sign_url"
 	echo "Verifying Debian signature..."
 	gpg --verify "$download_dir/debian/SHA512SUMS.sign" "$download_dir/debian/SHA512SUMS"
 	echo "Downloading Debian ISO image..."
-	wget --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/debian/" "$debian_base_url/$debian_iso_filename"
+	wget $wget_opts --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/debian/" "$debian_base_url/$debian_iso_filename"
 	echo "Verifying Debian ISO image integrity..."
 	cd "$download_dir/debian/" && sha512sum -c <(cat SHA512SUMS) && cd -
 }
@@ -74,13 +74,13 @@ function download_centos() {
 	centos_sums_url="${centos_base_url}/sha256sum.txt"
 	if [[ ! -d "$download_dir/centos/" ]]; then mkdir --directory-prefix="$download_dir/centos/"; fi
 	echo "Downloading CentOS keys, cheksums and signature..."
-	wget --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/centos/" "$centos_key_url"
-	wget --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/centos/" "$centos_sums_url"
-	wget --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/centos/" "$centos_sums_sign_url"
+	wget $wget_opts --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/centos/" "$centos_key_url"
+	wget $wget_opts --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/centos/" "$centos_sums_url"
+	wget $wget_opts --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/centos/" "$centos_sums_sign_url"
 	echo "Importing CentOS GPG key..."
 	gpg --import "$download_dir/centos/RPM-GPG-KEY-CentOS-${centos_version_major}"
 	echo "Downloading CentOS ISO image..."
-	wget --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/centos/" "$centos_iso_url"
+	wget $wget_opts --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/centos/" "$centos_iso_url"
 	cd "$download_dir/centos/"
 	echo "Verifying CentOS signature..."
 	gpg --verify < sha256sum.txt.asc
@@ -95,13 +95,13 @@ function download_tails() {
 	tails_key_url="https://tails.boum.org/tails-signing.key"
 	tails_sig_url="https://tails.boum.org/torrents/files/tails-${tails_architecture}-${tails_version}.iso.sig"
 	echo "downloading Tails key and signature..."
-	wget --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/tails/" "$tails_key_url"
-	wget --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/tails/" "$tails_sig_url"
+	wget $wget_opts --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/tails/" "$tails_key_url"
+	wget $wget_opts --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/tails/" "$tails_sig_url"
 	echo "Importing tails GPG key..."
 	gpg --import "$download_dir/tails/tails-signing.key"
 	echo "downloading Tails ISO image"
 	#Force HTTPS but ignore certificate checks since Tails CDN can point to other servers than dl.amnesia.boum.org
-	wget --continue --no-check-certificate --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/tails/" "$tails_iso_url"
+	wget $wget_opts --continue --no-check-certificate --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/tails/" "$tails_iso_url"
 	echo "verifying Tails signature..."
 	tails_sig_filename="tails-${tails_architecture}-${tails_version}.iso.sig"
 	tails_iso_filename="tails-${tails_architecture}-${tails_version}.iso"
@@ -114,15 +114,15 @@ function download_kali() {
 	kali_key_url="https://www.kali.org/archive-key.asc"
 	if [[ ! -d "$download_dir/kali/" ]]; then mkdir --directory-prefix="$download_dir/kali/"; fi
 	echo "Downloading Kali checksums, key and signature..."
-	wget --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/kali/" "$kali_base_url/SHA256SUMS"
-	wget --continue --no-verbose --show-progress -O "$download_dir/kali/SHA256SUMS.gpg" "$kali_base_url/SHA256SUMS.gpg"
-	wget --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/kali/" "$kali_key_url"
+	wget $wget_opts --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/kali/" "$kali_base_url/SHA256SUMS"
+	wget $wget_opts --continue --no-verbose --show-progress -O "$download_dir/kali/SHA256SUMS.gpg" "$kali_base_url/SHA256SUMS.gpg"
+	wget $wget_opts --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/kali/" "$kali_key_url"
 	echo "Importing Kali GPG key..."
 	gpg --import "$download_dir/kali/archive-key.asc"
 	echo "Verifying Kali signature..."
 	gpg --verify "$download_dir/kali/SHA256SUMS.gpg" "$download_dir/kali/SHA256SUMS"
 	echo "Downloading Kali ISO image..."
-	wget --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/kali/" "$kali_base_url/$kali_iso_filename"
+	wget $wget_opts --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/kali/" "$kali_base_url/$kali_iso_filename"
 	echo "Verifying Kali ISO image integrity..."
 	cd "$download_dir/kali/" && sha256sum -c <(grep "$kali_iso_filename" SHA256SUMS) && cd -
 }
@@ -134,7 +134,7 @@ function download_proxmox {
     # TODO checksums/gpg verify download
 	if [[ ! -d "$download_dir/kali/" ]]; then mkdir --directory-prefix="$download_dir/kali/"; fi
     proxmox_base_url="https://www.proxmox.com/images/download/pve/iso/"
-    wget --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/proxmox/" "$proxmox_base_url/proxmox-ve_$proxmox_version.iso"
+    wget $wget_opts --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/proxmox/" "$proxmox_base_url/proxmox-ve_$proxmox_version.iso"
 }
 
 function download_pfsense {
@@ -153,9 +153,9 @@ function download_pfsense {
 	pfsense_hashes_base_url="https://files.pfsense.org/hashes/"
 	if [[ ! -d "$download_dir/pfsense/" ]]; then mkdir --directory-prefix="$download_dir/pfsense/"; fi
 	echo "[distrib-dl] INFO: downloading pfsense checksums..."
-	wget --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/pfsense/" "${pfsense_hashes_base_url}/${pfsense_iso_filename}.sha256"
+	wget $wget_opts --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/pfsense/" "${pfsense_hashes_base_url}/${pfsense_iso_filename}.sha256"
     echo "[distrib-dl] INFO: downloading pfsense ISO image..."
-	wget --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/pfsense/" "${pfsense_base_url}/${pfsense_iso_filename}"
+	wget $wget_opts --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/pfsense/" "${pfsense_base_url}/${pfsense_iso_filename}"
     echo "[distrib-dl] INFO: verifying pfsense ISO image integrity..."
 	cd "$download_dir/pfsense" && sha256sum --check "pfSense-CE-memstick-${pfsense_is_serial}${pfsense_version}-RELEASE-amd64.img.gz.sha256" && cd -
 }
@@ -168,16 +168,17 @@ function download_freebsd() {
 	freebsd_gpgkeyring_url="https://www.freebsd.org/doc/pgpkeyring.txt"
 	if [[ ! -d "$download_dir/freebsd/" ]]; then mkdir --directory-prefix="$download_dir/freebsd/"; fi
 	echo "Downloading freebsd keyring, checksums and signature..."
-	wget --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/freebsd/" "$freebsd_gpgkeyring_url"
-	wget --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/freebsd/" "$freebsd_sums_url"
+	wget $wget_opts --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/freebsd/" "$freebsd_gpgkeyring_url"
+	wget $wget_opts --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/freebsd/" "$freebsd_sums_url"
 	gpg --verify "freebsd/$freebsd_sums_filename"
 	echo "Downloading freebsd ISO image..."
-	wget --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/freebsd/" "$freebsd_base_url/$freebsd_iso_filename"
+	wget $wget_opts --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/freebsd/" "$freebsd_base_url/$freebsd_iso_filename"
 	echo "Verifying freebsd ISO image integrity..."
 	cd "$download_dir/freebsd/" && sha512sum --ignore-missing -c <(cat ${freebsd_sums_filename}) && cd -
 }
 
 function _main() {
+	if [[ "${1-}" == "--check" ]]; then wget_opts="--spider"; else wget_opts=""; fi # TODO use getopts
 	if [[ "$@" =~ "debian" ]] ; then download_debian; cli="1"; fi
 	if [[ "$@" =~ "centos" ]] ; then download_centos; cli="1"; fi
 	if [[ "$@" =~ "tails" ]] ; then download_tails; cli="1"; fi
