@@ -31,6 +31,11 @@ pfsense_version="2.4.4"
 pfsense_installer_type="vga" #serial or vga
 ### FREEBSD
 freebsd_version="12.0"
+### GENTOO (LIVE DVD)
+# https://www.gentoo.org/downloads/signatures/
+gentoo_release="20160704"
+gentoo_image="livedvd-x86-amd64-32ul"
+gentoo_gpg_fingerprint="D99EAC7379A850BCE47DA5F29E6438C817072058"
 
 ############################
 
@@ -38,7 +43,7 @@ set -e
 cli="0"
 download_dir="$PWD"
 usage="$0 DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...]
-Available distributions: debian centos tails kali proxmox pfsense freebsd"
+Available distributions: debian centos tails kali proxmox pfsense freebsd gentoo-live"
 
 ############################
 
@@ -177,6 +182,25 @@ function download_freebsd() {
 	cd "$download_dir/freebsd/" && sha512sum --ignore-missing -c <(cat ${freebsd_sums_filename}) && cd -
 }
 
+function download_gentoo_live() {
+	# https://www.gentoo.org/downloads/mirrors/
+	gentoo_base_url="https://mirror.bytemark.co.uk/gentoo/releases/amd64/${gentoo_release}/"
+	gentoo_iso_filename="${gentoo_image}-${gentoo_release}.iso"
+	gentoo_sums_filename="${gentoo_iso_filename}.DIGESTS.asc"
+	gentoo_gpgkeyring_filename="${gentoo_iso_filename}.DIGESTS.sig"
+	if [[ ! -d "$download_dir/gentoo/" ]]; then mkdir -p "$download_dir/gentoo/"; fi
+	echo "Downloading gentoo keyring, checksums and signature..."
+	gpg --keyserver hkps://keys.gentoo.org --recv-keys "$gentoo_gpg_fingerprint"
+	wget -N -nv --show-progress -P "$download_dir/gentoo/" "${gentoo_base_url}${gentoo_gpgkeyring_filename}"
+	wget -N -nv --show-progress -P "$download_dir/gentoo/" "${gentoo_base_url}${gentoo_sums_filename}"
+	gpg --verify "gentoo/${gentoo_sums_filename}"
+	echo "Downloading Gentoo Live ISO image..."
+	wget --continue -N -nv --show-progress -P "$download_dir/gentoo/" "${gentoo_base_url}/${gentoo_iso_filename}"
+	echo "Verifying Gentoo Live ISO image integrity..."
+	cd "$download_dir/gentoo/" && sha512sum --ignore-missing -c <(cat ${gentoo_sums_filename}) && cd -
+}
+
+
 function _main() {
 	if [[ "${1-}" == "--check" ]]; then wget_opts="--spider"; else wget_opts=""; fi # TODO use getopts
 	if [[ "$@" =~ "debian" ]] ; then download_debian; cli="1"; fi
@@ -186,6 +210,7 @@ function _main() {
 	if [[ "$@" =~ "proxmox" ]] ; then download_proxmox; cli="1"; fi
 	if [[ "$@" =~ "pfsense" ]] ; then download_pfsense; cli="1"; fi
 	if [[ "$@" =~ "freebsd" ]] ; then download_freebsd; cli="1"; fi
+	if [[ "$@" =~ "gentoo-live" ]] ; then download_gentoo_live; cli="1"; fi
 	if [[ ! "$cli" = "1" ]]; then echo "Usage: $usage"; exit 1; fi
 }
 

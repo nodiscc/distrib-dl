@@ -18,7 +18,7 @@ Useful to maintain a local ISO image repository.
 
 ```
 ./distrib-dl DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...]
-Available distributions: debian centos tails kali proxmox pfsense freebsd
+Available distributions: debian centos tails kali proxmox pfsense freebsd gentoo-live
 ```
 
 * [Debian GNU/Linux](https://www.debian.org/)
@@ -28,6 +28,7 @@ Available distributions: debian centos tails kali proxmox pfsense freebsd
 * [Proxmox VE](https://pve.proxmox.com/wiki/Main_Page)
 * [pfSense](https://www.pfsense.org/download/)
 * [FreeBSD](https://www.freebsd.org/)
+* [Gentoo Linux](https://www.gentoo.org/downloads/) (Live DVD)
 
 
 ## Configuration
@@ -53,7 +54,6 @@ Architectures and distribution versions are configurable in the script itself.
 * add support for [Arch Linux](https://www.archlinux.org/)
 * add support for [GuixSD](https://www.gnu.org/software/guix/)
 * add support for [NixOS Linux](https://nixos.org/)
-* add support for [Gentoo Linux](https://www.gentoo.org/)
 * add support for [Fedora](https://getfedora.org/)
 * add support for [Ubuntu](https://www.ubuntu.com/)
 * add support for [OpenBSD](https://www.openbsd.org/)
