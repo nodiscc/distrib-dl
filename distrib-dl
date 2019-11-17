@@ -37,20 +37,17 @@ gentoo_release="20160704"
 gentoo_image="livedvd-x86-amd64-32ul"
 gentoo_gpg_fingerprint="D99EAC7379A850BCE47DA5F29E6438C817072058"
 
-#SLACKWARE CURRENT
-slack_release="current-mini-install"
-slack_md5sum="8c48b807e1313c0431166786a6296a4f"
 ############################
 
 set -e
 cli="0"
 download_dir="$PWD"
 usage="$0 DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...]
-Available distributions: debian centos tails kali proxmox pfsense freebsd gentoo-live slackware-current" 
+Available distributions: debian centos tails kali proxmox pfsense freebsd gentoo-live"
 
 ############################
 
- download_debian() {
+function download_debian() {
 	# Official netinstall image without firmwares (disabled)
 	#debian_base_url="https://cdimage.debian.org/debian-cd/current/${architecture}/iso-cd/"
 	#debian_iso_filename="debian-${debian_version}-${architecture}-netinst.iso"
@@ -71,7 +68,7 @@ Available distributions: debian centos tails kali proxmox pfsense freebsd gentoo
 	cd "$download_dir/debian/" && sha512sum -c <(cat SHA512SUMS) && cd -
 }
 
- download_centos() {
+function download_centos() {
 	# fingerprint: 6341 AB27 53D7 8A78 A7C2  7BB1 24C6 A8A7 F4A8 0EB5
 	centos_base_url="https://ftp.osuosl.org/pub/centos/${centos_version_major}/isos/x86_64/"
 	centos_iso_filename="CentOS-${centos_version_major}-x86_64-Minimal-${centos_version_minor}.iso"
@@ -97,7 +94,7 @@ Available distributions: debian centos tails kali proxmox pfsense freebsd gentoo
 	cd -
 }
 
- download_tails() {
+function download_tails() {
 	if [[ ! -d "$download_dir/tails/" ]]; then mkdir --directory-prefix="$download_dir/tails/"; fi
 	tails_iso_url="https://dl.amnesia.boum.org/tails/stable/tails-${tails_architecture}-${tails_version}/tails-${tails_architecture}-${tails_version}.iso"
 	tails_key_url="https://tails.boum.org/tails-signing.key"
@@ -116,7 +113,7 @@ Available distributions: debian centos tails kali proxmox pfsense freebsd gentoo
 	gpg --keyid-format 0xlong --verify "$download_dir/tails/$tails_sig_filename" "$download_dir/tails/$tails_iso_filename"
 }
 
- download_kali() {
+function download_kali() {
 	kali_base_url="https://cdimage.kali.org/kali-$kali_version/"
 	kali_iso_filename="kali-linux-$kali_version-$kali_architecture.iso"
 	kali_key_url="https://www.kali.org/archive-key.asc"
@@ -135,7 +132,7 @@ Available distributions: debian centos tails kali proxmox pfsense freebsd gentoo
 	cd "$download_dir/kali/" && sha256sum -c <(grep "$kali_iso_filename" SHA256SUMS) && cd -
 }
 
-download_proxmox() {
+function download_proxmox {
     # No list of available ISOs https://forum.proxmox.com/threads/wget-pmg-iso.42113/
     # https://www.proxmox.com/en/downloads/category/iso-images-pve
     # https://pve.proxmox.com/wiki/Roadmap
@@ -145,7 +142,7 @@ download_proxmox() {
     wget $wget_opts --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/proxmox/" "$proxmox_base_url/proxmox-ve_$proxmox_version.iso"
 }
 
-download_pfsense() {
+function download_pfsense {
     # TODO add other architectures (currently only amd64 supported)
 	# New York mirror (disabled)
 	#pfsense_base_url="https://nyifiles.pfsense.org/mirror/downloads"
@@ -168,7 +165,7 @@ download_pfsense() {
 	cd "$download_dir/pfsense" && sha256sum --check "pfSense-CE-memstick-${pfsense_is_serial}${pfsense_version}-RELEASE-amd64.img.gz.sha256" && cd -
 }
 
- download_freebsd() {
+function download_freebsd() {
 	freebsd_base_url="https://download.freebsd.org/ftp/releases/amd64/amd64/ISO-IMAGES/${freebsd_version}"
 	freebsd_iso_filename="FreeBSD-${freebsd_version}-RELEASE-amd64-memstick.img"
 	freebsd_sums_filename="CHECKSUM.SHA512-FreeBSD-${freebsd_version}-RELEASE-amd64.asc"
@@ -185,7 +182,7 @@ download_pfsense() {
 	cd "$download_dir/freebsd/" && sha512sum --ignore-missing -c <(cat ${freebsd_sums_filename}) && cd -
 }
 
- download_gentoo_live() {
+function download_gentoo_live() {
 	# https://www.gentoo.org/downloads/mirrors/
 	gentoo_base_url="https://mirror.bytemark.co.uk/gentoo/releases/amd64/${gentoo_release}/"
 	gentoo_iso_filename="${gentoo_image}-${gentoo_release}.iso"
@@ -202,21 +199,9 @@ download_pfsense() {
 	echo "Verifying Gentoo Live ISO image integrity..."
 	cd "$download_dir/gentoo/" && sha512sum --ignore-missing -c <(cat ${gentoo_sums_filename}) && cd -
 }
-download_slackware_current() {
-        # https://slackware.uk/people/alien-current-iso/slackware-current-iso/
-        slack_base_url="https://slackware.uk/people/alien-current-iso/slackware-current-iso/"
-        slack_iso_filename="slackware-${slack_release}.iso"
-        slack_sums_filename="MD5SUM"
-        slack_sums_url="https://slackware.uk/people/alien-current-iso/slackware-current-iso/${slack_sums_filename}"
-        if [[ ! -d "$download_dir/slackware_current/" ]]; then mkdir -p "$download_dir/slackware_current/"; fi
-        wget -N -nv --show-progress -P "$download_dir/slackware_current" "${slack_base_url}${slack_sums_filename}"
-        echo "Downloading Slackware-current Linux ISO image..."
-        wget --continue -N -nv --show-progress -P "$download_dir/slackware_current/" "${slack_base_url}/${slack_iso_filename}"
-        echo "Verifying Slackware-current ISO image integrity..."
-        cd "$download_dir/slackware_current/" && md5sum -c <(cat ${slack_sums_filename}) && cd -
-}
 
- _main() {
+
+function _main() {
 	if [[ "${1-}" == "--check" ]]; then wget_opts="--spider"; else wget_opts=""; fi # TODO use getopts
 	if [[ "$@" =~ "debian" ]] ; then download_debian; cli="1"; fi
 	if [[ "$@" =~ "centos" ]] ; then download_centos; cli="1"; fi
@@ -226,8 +211,7 @@ download_slackware_current() {
 	if [[ "$@" =~ "pfsense" ]] ; then download_pfsense; cli="1"; fi
 	if [[ "$@" =~ "freebsd" ]] ; then download_freebsd; cli="1"; fi
 	if [[ "$@" =~ "gentoo-live" ]] ; then download_gentoo_live; cli="1"; fi
-        if [[ "$@" =~ "slackware-current" ]] ; then download_slackware_current; cli="1"; fi
-        if [[ ! "$cli" = "1" ]]; then echo "Usage: $usage"; exit 1; fi
+	if [[ ! "$cli" = "1" ]]; then echo "Usage: $usage"; exit 1; fi
 }
 
 #####################
