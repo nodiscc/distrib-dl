@@ -39,8 +39,9 @@ gentoo_gpg_fingerprint="D99EAC7379A850BCE47DA5F29E6438C817072058"
 
 ############################
 
-set -e
-cli="0"
+# abort on errors
+set -o errexit
+
 download_dir="$PWD"
 usage="$0 [OPTIONS] DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...]
 Available distributions: debian centos tails kali proxmox pfsense freebsd gentoo-live
@@ -137,14 +138,14 @@ function download_kali() {
     wget $wget_opts --continue --no-verbose --show-progress -O "$download_dir/kali/SHA256SUMS.gpg" "$kali_base_url/SHA256SUMS.gpg"
     # shellcheck disable=SC2086
     wget $wget_opts --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/kali/" "$kali_key_url"
-    echo "Importing Kali GPG key..."
+    echo "[distrib-dl] INFO: Importing Kali GPG key..."
     gpg --import "$download_dir/kali/archive-key.asc"
     echo "Verifying Kali signature..."
     gpg --verify "$download_dir/kali/SHA256SUMS.gpg" "$download_dir/kali/SHA256SUMS"
-    echo "Downloading Kali ISO image..."
+    echo "[distrib-dl] INFO: Downloading Kali ISO image..."
     # shellcheck disable=SC2086
     wget $wget_opts --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/kali/" "$kali_base_url/$kali_iso_filename"
-    echo "Verifying Kali ISO image integrity..."
+    echo "[distrib-dl] INFO: Verifying Kali ISO image integrity..."
     cd "$download_dir/kali/" && sha256sum -c <(grep "$kali_iso_filename" SHA256SUMS) && cd -
 }
 
@@ -191,13 +192,13 @@ function download_freebsd() {
     freebsd_sums_url="https://www.freebsd.org/releases/${freebsd_version}R/${freebsd_sums_filename}"
     freebsd_gpgkeyring_url="https://www.freebsd.org/doc/pgpkeyring.txt"
     if [[ ! -d "$download_dir/freebsd/" ]]; then mkdir --directory-prefix="$download_dir/freebsd/"; fi
-    echo "Downloading freebsd keyring, checksums and signature..."
+    echo "[distrib-dl] INFO: Downloading freebsd keyring, checksums and signature..."
     # shellcheck disable=SC2086
     wget $wget_opts --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/freebsd/" "$freebsd_gpgkeyring_url"
     # shellcheck disable=SC2086
     wget $wget_opts --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/freebsd/" "$freebsd_sums_url"
     gpg --verify "freebsd/$freebsd_sums_filename"
-    echo "Downloading freebsd ISO image..."
+    echo "[distrib-dl] INFO: Downloading freebsd ISO image..."
     # shellcheck disable=SC2086
     wget $wget_opts --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/freebsd/" "$freebsd_base_url/$freebsd_iso_filename"
     echo "Verifying freebsd ISO image integrity..."
@@ -211,14 +212,14 @@ function download_gentoo_live() {
     gentoo_sums_filename="${gentoo_iso_filename}.DIGESTS.asc"
     gentoo_gpgkeyring_filename="${gentoo_iso_filename}.DIGESTS.sig"
     if [[ ! -d "$download_dir/gentoo/" ]]; then mkdir -p "$download_dir/gentoo/"; fi
-    echo "Downloading gentoo keyring, checksums and signature..."
+    echo "[distrib-dl] INFO: Downloading gentoo keyring, checksums and signature..."
     gpg --keyserver hkps://keys.gentoo.org --recv-keys "$gentoo_gpg_fingerprint"
     wget -N -nv --show-progress -P "$download_dir/gentoo/" "${gentoo_base_url}${gentoo_gpgkeyring_filename}"
     wget -N -nv --show-progress -P "$download_dir/gentoo/" "${gentoo_base_url}${gentoo_sums_filename}"
     gpg --verify "gentoo/${gentoo_sums_filename}"
-    echo "Downloading Gentoo Live ISO image..."
+    echo "[distrib-dl] INFO: Downloading Gentoo Live ISO image..."
     wget --continue -N -nv --show-progress -P "$download_dir/gentoo/" "${gentoo_base_url}/${gentoo_iso_filename}"
-    echo "Verifying Gentoo Live ISO image integrity..."
+    echo "[distrib-dl] INFO: Verifying Gentoo Live ISO image integrity..."
     cd "$download_dir/gentoo/" && sha512sum --ignore-missing -c <(cat ${gentoo_sums_filename}) && cd -
 }
 
@@ -228,7 +229,7 @@ function _main() {
     while getopts ":c" opt; do
         case $opt in
             c) wget_opts="--spider"; shift;;
-            \?) echo "invalid option -$OPTARG" >&2; exit 1;;
+            \?) echo "[distrib-dl] ERROR: invalid option -$OPTARG" >&2; exit 1;;
         esac
     done
 
