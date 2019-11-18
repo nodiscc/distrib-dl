@@ -43,13 +43,16 @@ ubuntu_release="19.10"
 ubuntu_image="ubuntu-${ubuntu_release}-desktop-amd64"
 ubuntu_gpg_fingerprint="46181433FBB75451"
 ubuntu_gpg_fingerprint2="D94AA3F0EFE21092"
+#VOID Linux
+voidlinux_image="void-live-x86_64-20181111"
+voidlinux_gpg_fingerprint="8DEBDA68B48282A4"
 ############################
 
 set -e
 cli="0"
 download_dir="$PWD"
 usage="$0 DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...]
-Available distributions: debian centos tails kali proxmox pfsense freebsd gentoo-live ubuntu"
+Available distributions: debian centos tails kali proxmox pfsense freebsd gentoo-live ubuntu voidlinux"
 
 ############################
 
@@ -223,6 +226,23 @@ download_pfsense() {
 	echo "Verifying Ubuntu Desktop ISO image integrity..."
 	cd "$download_dir/ubuntu/" && sha256sum --ignore-missing -c <(cat ${ubuntu_sums_filename}) && cd -
 }
+ 
+download_voidlinux() {
+	# https://alpha.de.repo.voidlinux.org/live/current/
+	voidlinux_base_url="https://alpha.de.repo.voidlinux.org/live/current/"
+	voidlinux_iso_filename="${voidlinux_image}.iso"
+	voidlinux_sums_filename="sha256sums.txt"  
+	voidlinux_gpgkeyring_filename="sha256sums.txt.sig"
+	if [[ ! -d "$download_dir/voidlinux/" ]]; then mkdir -p "$download_dir/voidlinux/"; fi
+	echo "Downloading VoidLinux keyring, checksums and signature..."
+	gpg  --keyid-format long --keyserver hkps://keyserver.ubuntu.com --recv-keys "$voidlinux_gpg_fingerprint" 
+	wget -N -nv --show-progress -P "$download_dir/voidlinux/" "${voidlinux_base_url}${voidlinux_gpgkeyring_filename}"  
+	wget -N -nv --show-progress -P "$download_dir/voidlinux/" "${voidlinux_base_url}${voidlinux_sums_filename}"
+	echo "Downloading VoidLinux ISO image..."
+	wget --continue -N -nv --show-progress -P "$download_dir/voidlinux/" "${voidlinux_base_url}/${voidlinux_iso_filename}"
+	echo "Verifying VoidLinux ISO image integrity..."
+	cd "$download_dir/voidlinux/" && sha256sum --ignore-missing -c <(cat ${voidlinux_sums_filename}) && cd -
+}
 
  _main() {
 	if [[ "${1-}" == "--check" ]]; then wget_opts="--spider"; else wget_opts=""; fi # TODO use getopts
@@ -235,7 +255,8 @@ download_pfsense() {
 	if [[ "$@" =~ "freebsd" ]] ; then download_freebsd; cli="1"; fi
 	if [[ "$@" =~ "gentoo-live" ]] ; then download_gentoo_live; cli="1"; fi
 	if [[ "$@" =~ "ubuntu" ]] ; then download_ubuntu; cli="1";fi
-	if [[ ! "$cli" = "1" ]]; then echo "Usage: $usage"; exit 1; fi
+	if [[ "$@" =~ "voidlinux" ]] ; then download_voidlinux; cli="1";fi
+        if [[ ! "$cli" = "1" ]]; then echo "Usage: $usage"; exit 1; fi
 }
 
 #####################
