@@ -42,8 +42,10 @@ gentoo_gpg_fingerprint="D99EAC7379A850BCE47DA5F29E6438C817072058"
 set -e
 cli="0"
 download_dir="$PWD"
-usage="$0 DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...]
-Available distributions: debian centos tails kali proxmox pfsense freebsd gentoo-live"
+usage="$0 [OPTIONS] DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...]
+Available distributions: debian centos tails kali proxmox pfsense freebsd gentoo-live
+Options:
+-c        only check that the url returns 200, don't download anything"
 
 ############################
 
@@ -222,16 +224,25 @@ function download_gentoo_live() {
 
 
 function _main() {
-    if [[ "${1-}" == "--check" ]]; then wget_opts="--spider"; else wget_opts=""; fi # TODO use getopts
-    if [[ "$@" =~ "debian" ]] ; then download_debian; cli="1"; fi
-    if [[ "$@" =~ "centos" ]] ; then download_centos; cli="1"; fi
-    if [[ "$@" =~ "tails" ]] ; then download_tails; cli="1"; fi
-    if [[ "$@" =~ "kali" ]] ; then download_kali; cli="1"; fi
-    if [[ "$@" =~ "proxmox" ]] ; then download_proxmox; cli="1"; fi
-    if [[ "$@" =~ "pfsense" ]] ; then download_pfsense; cli="1"; fi
-    if [[ "$@" =~ "freebsd" ]] ; then download_freebsd; cli="1"; fi
-    if [[ "$@" =~ "gentoo-live" ]] ; then download_gentoo_live; cli="1"; fi
-    if [[ ! "$cli" = "1" ]]; then echo "Usage: $usage"; exit 1; fi
+    wget_opts=""
+    while getopts ":c" opt; do
+        case $opt in
+            c) wget_opts="--spider"; shift;;
+            \?) echo "invalid option -$OPTARG" >&2; exit 1;;
+        esac
+    done
+
+    for distribution in $@: do
+        if [[ "$distribution" == "debian" ]] ; then download_debian; fi
+        if [[ "$distribution" == "centos" ]] ; then download_centos; fi
+        if [[ "$distribution" == "tails" ]] ; then download_tails; fi
+        if [[ "$distribution" == "kali" ]] ; then download_kali; fi
+        if [[ "$distribution" == "proxmox" ]] ; then download_proxmox; fi
+        if [[ "$distribution" == "pfsense" ]] ; then download_pfsense; fi
+        if [[ "$distribution" == "freebsd" ]] ; then download_freebsd; fi
+        if [[ "$distribution" == "gentoo-live" ]] ; then download_gentoo_live; fi
+        if [[ "$distribution" == "1" ]]; then echo "Usage: $usage"; exit 1; fi
+    done
 }
 
 #####################
