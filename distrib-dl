@@ -232,7 +232,7 @@ function _main() {
         esac
     done
 
-    for distribution in $@: do
+    for distribution in $*; do
         if [[ "$distribution" == "debian" ]] ; then download_debian; fi
         if [[ "$distribution" == "centos" ]] ; then download_centos; fi
         if [[ "$distribution" == "tails" ]] ; then download_tails; fi
