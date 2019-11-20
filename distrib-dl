@@ -46,13 +46,18 @@ ubuntu_gpg_fingerprint2="D94AA3F0EFE21092"
 #VOID Linux
 voidlinux_image="void-live-x86_64-20181111"
 voidlinux_gpg_fingerprint="8DEBDA68B48282A4"
+#NIXOS
+nixos_release="nixos-graphical-19.09.1269.09f5f3a810c-x86_64-linux"
+nixos_gpg_fingerprint1="0xFE918C3A98C1030F"
+nixos_gpg_fingerprint2="0x846FDED7792617B4"
+nixos_gpg_fingerprint3="0xC2FFBCAFD2C24246"
 ############################
 
 set -e
 cli="0"
 download_dir="$PWD"
 usage="$0 DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...]
-Available distributions: debian centos tails kali proxmox pfsense freebsd gentoo-live ubuntu voidlinux"
+Available distributions: debian centos tails kali proxmox pfsense freebsd gentoo-live ubuntu voidlinux nixos"
 
 ############################
 
@@ -243,8 +248,18 @@ download_voidlinux() {
 	echo "Verifying VoidLinux ISO image integrity..."
 	cd "$download_dir/voidlinux/" && sha256sum --ignore-missing -c <(cat ${voidlinux_sums_filename}) && cd -
 }
+download_nixos() {
+	#https://releases.nixos.org/nixos/19.09/nixos-19.09.1269.09f5f3a810c/nixos-graphical-19.09.1269.09f5f3a810c-x86_64-linux.iso 
+	nixos_base_url="https://releases.nixos.org/nixos/19.09/nixos-19.09.1269.09f5f3a810c/"
+	nixos_iso_filename="${nixos_release}.iso"
+	if [[ ! -d "$download_dir/nixos/" ]]; then mkdir -p "$download_dir/nixos/"; fi
+	echo "Downloading NixOS security devs keys ..."
+	gpg  --keyid-format long --keyserver hkps://keyserver.ubuntu.com --recv-keys "$nixos_gpg_fingerprint1" "$nixos_gpg_fingerprint2" "$nixos_gpg_fingerprint3"
+        echo "Downloading NixOS Graphical install ISO image..."
+	wget --continue -N -nv --show-progress -P "$download_dir/nixos/" "${nixos_base_url}${nixos_iso_filename}"
+}
 
- _main() {
+_main() {
 	if [[ "${1-}" == "--check" ]]; then wget_opts="--spider"; else wget_opts=""; fi # TODO use getopts
 	if [[ "$@" =~ "debian" ]] ; then download_debian; cli="1"; fi
 	if [[ "$@" =~ "centos" ]] ; then download_centos; cli="1"; fi
@@ -256,6 +271,7 @@ download_voidlinux() {
 	if [[ "$@" =~ "gentoo-live" ]] ; then download_gentoo_live; cli="1"; fi
 	if [[ "$@" =~ "ubuntu" ]] ; then download_ubuntu; cli="1";fi
 	if [[ "$@" =~ "voidlinux" ]] ; then download_voidlinux; cli="1";fi
+	if [[ "$@" =~ "nixos" ]] ; then download_nixos; cli="1";fi
         if [[ ! "$cli" = "1" ]]; then echo "Usage: $usage"; exit 1; fi
 }
 
