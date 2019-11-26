@@ -36,7 +36,12 @@ freebsd_version="12.0"
 gentoo_release="20160704"
 gentoo_image="livedvd-x86-amd64-32ul"
 gentoo_gpg_fingerprint="D99EAC7379A850BCE47DA5F29E6438C817072058"
-
+### UBUNTU
+ubuntu_codename="eoan"
+ubuntu_release="19.10"
+ubuntu_image="ubuntu-${ubuntu_release}-desktop-amd64"
+ubuntu_gpg_fingerprint1="46181433FBB75451"
+ubuntu_gpg_fingerprint2="D94AA3F0EFE21092"
 ############################
 
 # abort on errors
@@ -44,7 +49,7 @@ set -o errexit
 
 download_dir="$PWD"
 usage="$0 [OPTIONS] DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...]
-Available distributions: debian centos tails kali proxmox pfsense freebsd gentoo-live
+Available distributions: debian centos tails kali proxmox pfsense freebsd gentoo-live ubuntu
 Options:
 -c        only check that the url returns 200, don't download anything"
 
@@ -222,7 +227,24 @@ function download_gentoo_live() {
     echo "[distrib-dl] INFO: Verifying Gentoo Live ISO image integrity..."
     cd "$download_dir/gentoo/" && sha512sum --ignore-missing -c <(cat ${gentoo_sums_filename}) && cd -
 }
-
+ 
+  download_ubuntu() {
+	#http://releases.ubuntu.com/ 
+	ubuntu_base_url="http://releases.ubuntu.com/${ubuntu_codename}/"
+	ubuntu_iso_filename="${ubuntu_image}.iso"
+	ubuntu_sums_filename="SHA256SUMS"
+	ubuntu_gpgkeyring_filename="SHA256SUMS.gpg"
+	if [[ ! -d "$download_dir/ubuntu/" ]]; then mkdir -p "$download_dir/ubuntu/"; fi
+	echo "Downloading Ubuntu keyring, checksums and signature..."
+	gpg  --keyid-format long --keyserver hkps://keyserver.ubuntu.com --recv-keys "$ubuntu_gpg_fingerprint1" "$ubuntu_gpg_fingerprint2"
+	wget -N -nv --show-progress -P "$download_dir/ubuntu/" "${ubuntu_base_url}${ubuntu_gpgkeyring_filename}"  
+	wget -N -nv --show-progress -P "$download_dir/ubuntu/" "${ubuntu_base_url}${ubuntu_sums_filename}"
+	gpg --keyid-format long --verify "ubuntu/${ubuntu_gpgkeyring_filename}" "ubuntu/${ubuntu_sums_filename}"
+	echo "Downloading Ubuntu Latest Desktop ISO image..."
+	wget --continue -N -nv --show-progress -P "$download_dir/ubuntu/" "${ubuntu_base_url}/${ubuntu_iso_filename}"
+	echo "Verifying Ubuntu Desktop ISO image integrity..."
+	cd "$download_dir/ubuntu/" && sha256sum --ignore-missing -c <(cat ${ubuntu_sums_filename}) && cd -
+}
 
 function _main() {
     wget_opts=""
@@ -242,6 +264,7 @@ function _main() {
         if [[ "$distribution" == "pfsense" ]] ; then download_pfsense; fi
         if [[ "$distribution" == "freebsd" ]] ; then download_freebsd; fi
         if [[ "$distribution" == "gentoo-live" ]] ; then download_gentoo_live; fi
+        if [[ "$distribution" == "ubuntu" ]] ; then download_ubuntu; fi
         if [[ "$distribution" == "1" ]]; then echo "Usage: $usage"; exit 1; fi
     done
 }
