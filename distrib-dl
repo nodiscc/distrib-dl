@@ -36,28 +36,17 @@ freebsd_version="12.0"
 gentoo_release="20160704"
 gentoo_image="livedvd-x86-amd64-32ul"
 gentoo_gpg_fingerprint="D99EAC7379A850BCE47DA5F29E6438C817072058"
-
-#UBUNTU
-ubuntu_codename="eoan"
-ubuntu_release="19.10"
-ubuntu_image="ubuntu-${ubuntu_release}-desktop-amd64"
-ubuntu_gpg_fingerprint="46181433FBB75451"
-ubuntu_gpg_fingerprint2="D94AA3F0EFE21092"
-#VOID Linux
-voidlinux_image="void-live-x86_64-20181111"
-voidlinux_gpg_fingerprint="8DEBDA68B48282A4"
-#NIXOS
-nixos_release="nixos-graphical-19.09.1269.09f5f3a810c-x86_64-linux"
-nixos_gpg_fingerprint1="0xFE918C3A98C1030F"
-nixos_gpg_fingerprint2="0x846FDED7792617B4"
-nixos_gpg_fingerprint3="0xC2FFBCAFD2C24246"
+#ARCH LINUX
+arch_release="2019.11.01-x86_64"
+arch_image="archlinux-2019.11.01-x86_64"
+arch_gpg_fingerprint="eaa165edab76243cd30a64db472a7a09c9c98a31"
 ############################
 
 set -e
 cli="0"
 download_dir="$PWD"
 usage="$0 DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...]
-Available distributions: debian centos tails kali proxmox pfsense freebsd gentoo-live ubuntu voidlinux nixos"
+Available distributions: debian centos tails kali proxmox pfsense freebsd gentoo-live archlinux"
 
 ############################
 
@@ -146,7 +135,7 @@ Available distributions: debian centos tails kali proxmox pfsense freebsd gentoo
 	cd "$download_dir/kali/" && sha256sum -c <(grep "$kali_iso_filename" SHA256SUMS) && cd -
 }
 
-download_proxmox() {
+ download_proxmox() {
     # No list of available ISOs https://forum.proxmox.com/threads/wget-pmg-iso.42113/
     # https://www.proxmox.com/en/downloads/category/iso-images-pve
     # https://pve.proxmox.com/wiki/Roadmap
@@ -156,7 +145,7 @@ download_proxmox() {
     wget $wget_opts --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/proxmox/" "$proxmox_base_url/proxmox-ve_$proxmox_version.iso"
 }
 
-download_pfsense() {
+ download_pfsense() {
     # TODO add other architectures (currently only amd64 supported)
 	# New York mirror (disabled)
 	#pfsense_base_url="https://nyifiles.pfsense.org/mirror/downloads"
@@ -214,52 +203,26 @@ download_pfsense() {
 	cd "$download_dir/gentoo/" && sha512sum --ignore-missing -c <(cat ${gentoo_sums_filename}) && cd -
 }
 
- download_ubuntu() {
-	#http://releases.ubuntu.com/ 
-	ubuntu_base_url="http://releases.ubuntu.com/${ubuntu_codename}/"
-	ubuntu_iso_filename="${ubuntu_image}.iso"
-	ubuntu_sums_filename="SHA256SUMS"
-	ubuntu_gpgkeyring_filename="SHA256SUMS.gpg"
-	if [[ ! -d "$download_dir/ubuntu/" ]]; then mkdir -p "$download_dir/ubuntu/"; fi
-	echo "Downloading Ubuntu keyring, checksums and signature..."
-	gpg  --keyid-format long --keyserver hkps://keyserver.ubuntu.com --recv-keys "$ubuntu_gpg_fingerprint" "$ubuntu_gpg_fingerprint2"
-	wget -N -nv --show-progress -P "$download_dir/ubuntu/" "${ubuntu_base_url}${ubuntu_gpgkeyring_filename}"  
-	wget -N -nv --show-progress -P "$download_dir/ubuntu/" "${ubuntu_base_url}${ubuntu_sums_filename}"
-	gpg --keyid-format long --verify "ubuntu/${ubuntu_gpgkeyring_filename}" "ubuntu/${ubuntu_sums_filename}"
-	echo "Downloading Ubuntu Latest Desktop ISO image..."
-	wget --continue -N -nv --show-progress -P "$download_dir/ubuntu/" "${ubuntu_base_url}/${ubuntu_iso_filename}"
-	echo "Verifying Ubuntu Desktop ISO image integrity..."
-	cd "$download_dir/ubuntu/" && sha256sum --ignore-missing -c <(cat ${ubuntu_sums_filename}) && cd -
-}
- 
-download_voidlinux() {
-	# https://alpha.de.repo.voidlinux.org/live/current/
-	voidlinux_base_url="https://alpha.de.repo.voidlinux.org/live/current/"
-	voidlinux_iso_filename="${voidlinux_image}.iso"
-	voidlinux_sums_filename="sha256sums.txt"  
-	voidlinux_gpgkeyring_filename="sha256sums.txt.sig"
-	if [[ ! -d "$download_dir/voidlinux/" ]]; then mkdir -p "$download_dir/voidlinux/"; fi
-	echo "Downloading VoidLinux keyring, checksums and signature..."
-	gpg  --keyid-format long --keyserver hkps://keyserver.ubuntu.com --recv-keys "$voidlinux_gpg_fingerprint" 
-	wget -N -nv --show-progress -P "$download_dir/voidlinux/" "${voidlinux_base_url}${voidlinux_gpgkeyring_filename}"  
-	wget -N -nv --show-progress -P "$download_dir/voidlinux/" "${voidlinux_base_url}${voidlinux_sums_filename}"
-	echo "Downloading VoidLinux ISO image..."
-	wget --continue -N -nv --show-progress -P "$download_dir/voidlinux/" "${voidlinux_base_url}/${voidlinux_iso_filename}"
-	echo "Verifying VoidLinux ISO image integrity..."
-	cd "$download_dir/voidlinux/" && sha256sum --ignore-missing -c <(cat ${voidlinux_sums_filename}) && cd -
-}
-download_nixos() {
-	#https://releases.nixos.org/nixos/19.09/nixos-19.09.1269.09f5f3a810c/nixos-graphical-19.09.1269.09f5f3a810c-x86_64-linux.iso 
-	nixos_base_url="https://releases.nixos.org/nixos/19.09/nixos-19.09.1269.09f5f3a810c/"
-	nixos_iso_filename="${nixos_release}.iso"
-	if [[ ! -d "$download_dir/nixos/" ]]; then mkdir -p "$download_dir/nixos/"; fi
-	echo "Downloading NixOS security devs keys ..."
-	gpg  --keyid-format long --keyserver hkps://keyserver.ubuntu.com --recv-keys "$nixos_gpg_fingerprint1" "$nixos_gpg_fingerprint2" "$nixos_gpg_fingerprint3"
-        echo "Downloading NixOS Graphical install ISO image..."
-	wget --continue -N -nv --show-progress -P "$download_dir/nixos/" "${nixos_base_url}${nixos_iso_filename}"
+download_arch_linux() {
+        # https://www.archlinux.org/downloads
+        arch_base_url="http://mirror.rackspace.com/archlinux/iso/2019.11.01/"
+        arch_iso_filename="archlinux-${arch_release}.iso"
+        arch_sums_filename="sha1sums.txt"
+        arch_sums_url="http://mirror.rackspace.com/archlinux/iso/2019.11.01/${arch_sums_filename}"
+        arch_gpgkeyring_filename="http://mirror.rackspace.com/archlinux/iso/2019.11.01/archlinux-${arch_release}.iso.sig"
+        if [[ ! -d "$download_dir/arch/" ]]; then mkdir -p "$download_dir/arch/"; fi
+        echo "Downloading arch keyring, checksums and signature..."
+        gpg --keyserver hkps://pgp.mit.edu --recv-keys "$arch_gpg_fingerprint"
+        wget -N -nv --show-progress -P "$download_dir/arch/" "${arch_base_url}${arch_gpgkeyring_filename}"
+        wget -N -nv --show-progress -P "$download_dir/arch/" "${arch_base_url}${arch_sums_filename}"
+        gpg --verify "arch/${arch_sums_filename}"
+        echo "Downloading Arch Linux ISO image..."
+        wget --continue -N -nv --show-progress -P "$download_dir/arch/" "${arch_base_url}/${arch_iso_filename}"
+        echo "Verifying Arch Linux ISO image integrity..."
+        cd "$download_dir/arch/" && sha512sum --ignore-missing -c <(cat ${arch_sums_filename}) && cd -
 }
 
-_main() {
+ _main() {
 	if [[ "${1-}" == "--check" ]]; then wget_opts="--spider"; else wget_opts=""; fi # TODO use getopts
 	if [[ "$@" =~ "debian" ]] ; then download_debian; cli="1"; fi
 	if [[ "$@" =~ "centos" ]] ; then download_centos; cli="1"; fi
@@ -269,9 +232,7 @@ _main() {
 	if [[ "$@" =~ "pfsense" ]] ; then download_pfsense; cli="1"; fi
 	if [[ "$@" =~ "freebsd" ]] ; then download_freebsd; cli="1"; fi
 	if [[ "$@" =~ "gentoo-live" ]] ; then download_gentoo_live; cli="1"; fi
-	if [[ "$@" =~ "ubuntu" ]] ; then download_ubuntu; cli="1";fi
-	if [[ "$@" =~ "voidlinux" ]] ; then download_voidlinux; cli="1";fi
-	if [[ "$@" =~ "nixos" ]] ; then download_nixos; cli="1";fi
+        if [[ "$@" =~ "archlinux" ]] ; then download_arch_linux; cli="1"; fi
         if [[ ! "$cli" = "1" ]]; then echo "Usage: $usage"; exit 1; fi
 }
 
