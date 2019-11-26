@@ -37,6 +37,10 @@ gentoo_release="20160704"
 gentoo_image="livedvd-x86-amd64-32ul"
 gentoo_gpg_fingerprint="D99EAC7379A850BCE47DA5F29E6438C817072058"
 
+### OpenSUSE TUMBLEWEED
+opensuse_release="tumbleweed"
+opensuse_image="openSUSE-Tumbleweed-DVD-x86_64-Snapshot20191124-Media"
+opensuse_gpg_fingerprint="0x22C07BA534178CD02EFE22AAB88B2FD43DBDC284"
 ############################
 
 # abort on errors
@@ -223,6 +227,22 @@ function download_gentoo_live() {
     cd "$download_dir/gentoo/" && sha512sum --ignore-missing -c <(cat ${gentoo_sums_filename}) && cd -
 }
 
+download_opensuse_tumbleweed() {
+    # https://www.opensuse.org/#Tumbleweed
+    opensuse_base_url="http://opensuse.mirrors.theom.nz/${opensuse_release}/iso/"
+    opensuse_iso_filename="${opensuse_image}.iso"
+    opensuse_sums_filename="${opensuse_iso_filename}.sha256"
+    if [[ ! -d "$download_dir/opensuse/" ]]; then mkdir -p "$download_dir/opensuse/"; fi
+    echo "[distrib-dl] INFO: Downloading Opensuse Tumbleweed keyring, checksums and signature..."
+    gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys "$opensuse_gpg_fingerprint"
+    wget -N -nv --show-progress -P "$download_dir/opensuse/" "${opensuse_base_url}${opensuse_sums_filename}"
+    gpg --verify "opensuse/${opensuse_sums_filename}"
+    echo "[distrib-dl] INFO: Downloading OpenSUSE Tumbleweed ISO image..."
+    wget --continue -N -nv --show-progress -P "$download_dir/opensuse/" "${opensuse_base_url}/${opensuse_iso_filename}"
+    echo "[distrib-dl] INFO: Verifying OpenSUSE Tumbleweed ISO image integrity..."
+    cd "$download_dir/opensuse/" && sha256sum --ignore-missing -c <(cat ${opensuse_sums_filename}) && cd -
+}
+
 
 function _main() {
     wget_opts=""
@@ -242,6 +262,7 @@ function _main() {
         if [[ "$distribution" == "pfsense" ]] ; then download_pfsense; fi
         if [[ "$distribution" == "freebsd" ]] ; then download_freebsd; fi
         if [[ "$distribution" == "gentoo-live" ]] ; then download_gentoo_live; fi
+        if [[ "$distribution" == "opensuse" ]] ; then download_opensuse_tumbleweed; fi
         if [[ "$distribution" == "1" ]]; then echo "Usage: $usage"; exit 1; fi
     done
 }
