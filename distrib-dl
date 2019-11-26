@@ -36,7 +36,11 @@ freebsd_version="12.0"
 gentoo_release="20160704"
 gentoo_image="livedvd-x86-amd64-32ul"
 gentoo_gpg_fingerprint="D99EAC7379A850BCE47DA5F29E6438C817072058"
-
+### NIXOS
+nixos_release="nixos-graphical-19.09.1269.09f5f3a810c-x86_64-linux"
+nixos_gpg_fingerprint1="0xFE918C3A98C1030F"
+nixos_gpg_fingerprint2="0x846FDED7792617B4"
+nixos_gpg_fingerprint3="0xC2FFBCAFD2C24246"
 ############################
 
 # abort on errors
@@ -44,7 +48,7 @@ set -o errexit
 
 download_dir="$PWD"
 usage="$0 [OPTIONS] DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...]
-Available distributions: debian centos tails kali proxmox pfsense freebsd gentoo-live
+Available distributions: debian centos tails kali proxmox pfsense freebsd gentoo-live nixos
 Options:
 -c        only check that the url returns 200, don't download anything"
 
@@ -223,6 +227,16 @@ function download_gentoo_live() {
     cd "$download_dir/gentoo/" && sha512sum --ignore-missing -c <(cat ${gentoo_sums_filename}) && cd -
 }
 
+download_nixos() {
+	#https://releases.nixos.org/nixos/19.09/nixos-19.09.1269.09f5f3a810c/nixos-graphical-19.09.1269.09f5f3a810c-x86_64-linux.iso 
+	nixos_base_url="https://releases.nixos.org/nixos/19.09/nixos-19.09.1269.09f5f3a810c/"
+	nixos_iso_filename="${nixos_release}.iso"
+	if [[ ! -d "$download_dir/nixos/" ]]; then mkdir -p "$download_dir/nixos/"; fi
+	echo "Downloading NixOS security devs keys ..."
+	gpg  --keyid-format long --keyserver hkps://keyserver.ubuntu.com --recv-keys "$nixos_gpg_fingerprint1" "$nixos_gpg_fingerprint2" "$nixos_gpg_fingerprint3"
+        echo "Downloading NixOS Graphical install ISO image..."
+	wget --continue -N -nv --show-progress -P "$download_dir/nixos/" "${nixos_base_url}${nixos_iso_filename}"
+}
 
 function _main() {
     wget_opts=""
@@ -242,6 +256,7 @@ function _main() {
         if [[ "$distribution" == "pfsense" ]] ; then download_pfsense; fi
         if [[ "$distribution" == "freebsd" ]] ; then download_freebsd; fi
         if [[ "$distribution" == "gentoo-live" ]] ; then download_gentoo_live; fi
+        if [[ "$distribution" == "nixos" ]] ; then download_nixos; fi
         if [[ "$distribution" == "1" ]]; then echo "Usage: $usage"; exit 1; fi
     done
 }
