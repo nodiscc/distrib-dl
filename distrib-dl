@@ -36,7 +36,10 @@ freebsd_version="12.0"
 gentoo_release="20160704"
 gentoo_image="livedvd-x86-amd64-32ul"
 gentoo_gpg_fingerprint="D99EAC7379A850BCE47DA5F29E6438C817072058"
-
+### ARCH LINUX
+arch_release="2019.11.01-x86_64"
+arch_image="archlinux-2019.11.01-x86_64"
+arch_gpg_fingerprint="eaa165edab76243cd30a64db472a7a09c9c98a31"
 ############################
 
 # abort on errors
@@ -44,7 +47,7 @@ set -o errexit
 
 download_dir="$PWD"
 usage="$0 [OPTIONS] DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...]
-Available distributions: debian centos tails kali proxmox pfsense freebsd gentoo-live
+Available distributions: debian centos tails kali proxmox pfsense freebsd gentoo-live archlinux
 Options:
 -c        only check that the url returns 200, don't download anything"
 
@@ -222,6 +225,24 @@ function download_gentoo_live() {
     echo "[distrib-dl] INFO: Verifying Gentoo Live ISO image integrity..."
     cd "$download_dir/gentoo/" && sha512sum --ignore-missing -c <(cat ${gentoo_sums_filename}) && cd -
 }
+ download_arch() {
+        # https://www.archlinux.org/downloads
+        arch_base_url="http://mirror.rackspace.com/archlinux/iso/2019.11.01/"
+        arch_iso_filename="archlinux-${arch_release}.iso"
+        arch_sums_filename="sha1sums.txt"
+        arch_sums_url="http://mirror.rackspace.com/archlinux/iso/2019.11.01/${arch_sums_filename}"
+        arch_gpgkeyring_filename="http://mirror.rackspace.com/archlinux/iso/2019.11.01/archlinux-${arch_release}.iso.sig"
+        if [[ ! -d "$download_dir/arch/" ]]; then mkdir -p "$download_dir/arch/"; fi
+        echo "Downloading arch keyring, checksums and signature..."
+        gpg --keyserver hkps://pgp.mit.edu --recv-keys "$arch_gpg_fingerprint"
+        wget -N -nv --show-progress -P "$download_dir/arch/" "${arch_base_url}${arch_gpgkeyring_filename}"
+        wget -N -nv --show-progress -P "$download_dir/arch/" "${arch_base_url}${arch_sums_filename}"
+        gpg --verify "arch/${arch_sums_filename}"
+        echo "Downloading Arch Linux ISO image..."
+        wget --continue -N -nv --show-progress -P "$download_dir/arch/" "${arch_base_url}/${arch_iso_filename}"
+        echo "Verifying Arch Linux ISO image integrity..."
+        cd "$download_dir/arch/" && sha512sum --ignore-missing -c <(cat ${arch_sums_filename}) && cd -
+}
 
 
 function _main() {
@@ -242,6 +263,7 @@ function _main() {
         if [[ "$distribution" == "pfsense" ]] ; then download_pfsense; fi
         if [[ "$distribution" == "freebsd" ]] ; then download_freebsd; fi
         if [[ "$distribution" == "gentoo-live" ]] ; then download_gentoo_live; fi
+        if [[ "$distribution" ==  "arch" ]] ; then download_arch; fi
         if [[ "$distribution" == "1" ]]; then echo "Usage: $usage"; exit 1; fi
     done
 }
