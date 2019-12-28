@@ -18,7 +18,7 @@ Useful to maintain a local ISO image repository.
 
 ```
 ./distrib-dl DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...]
-Available distributions: debian centos tails kali proxmox pfsense freebsd gentoo-live
+Available distributions: debian centos tails kali proxmox pfsense freebsd
 ```
 
 * [Debian GNU/Linux](https://www.debian.org/)
@@ -28,7 +28,6 @@ Available distributions: debian centos tails kali proxmox pfsense freebsd gentoo
 * [Proxmox VE](https://pve.proxmox.com/wiki/Main_Page)
 * [pfSense](https://www.pfsense.org/download/)
 * [FreeBSD](https://www.freebsd.org/)
-* [Gentoo Linux](https://www.gentoo.org/downloads/) (Live DVD)
 * [Android x86](https://www.android-x86.org/)
 
 
@@ -47,7 +46,7 @@ Architectures and distribution versions are configurable in the script itself.
 * add support for bittorrent downloads (transmission-cli?)
 * add a --check mode: just ensure that wget commands return HTTP code 200
 * automatically check for new versions of distributions (RSS feeds?)
-* support other distros (arch/ubuntu/mint/zorin/alpine/fedora/dban/gentoo...)
+* support other distros (arch/ubuntu/mint/zorin/alpine/fedora/dban/...)
 * support downloading via bittorrent/transmission-cli
 * centos: do not hardcode mirror, let centos.org take us to the closest download
 * add support for Debian Live

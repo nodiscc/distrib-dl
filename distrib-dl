@@ -31,11 +31,6 @@ pfsense_version="2.4.4"
 pfsense_installer_type="vga" #serial or vga
 ### FREEBSD
 freebsd_version="12.0"
-### GENTOO (LIVE DVD)
-# https://www.gentoo.org/downloads/signatures/
-gentoo_release="20160704"
-gentoo_image="livedvd-x86-amd64-32ul"
-gentoo_gpg_fingerprint="D99EAC7379A850BCE47DA5F29E6438C817072058"
 ### ANDROID X86
 androidx86_version="9.0-rc1"
 
@@ -46,7 +41,7 @@ set -o errexit
 
 download_dir="$PWD"
 usage="$0 [OPTIONS] DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...]
-Available distributions: debian centos tails kali proxmox pfsense freebsd gentoo-live androidx86
+Available distributions: debian centos tails kali proxmox pfsense freebsd androidx86
 Options:
 -c        only check that the url returns 200, don't download anything"
 
@@ -207,24 +202,6 @@ function download_freebsd() {
     cd "$download_dir/freebsd/" && sha512sum --ignore-missing -c <(cat ${freebsd_sums_filename}) && cd -
 }
 
-function download_gentoo_live() {
-    # https://www.gentoo.org/downloads/mirrors/
-    gentoo_base_url="https://mirror.bytemark.co.uk/gentoo/releases/amd64/${gentoo_release}/"
-    gentoo_iso_filename="${gentoo_image}-${gentoo_release}.iso"
-    gentoo_sums_filename="${gentoo_iso_filename}.DIGESTS.asc"
-    gentoo_gpgkeyring_filename="${gentoo_iso_filename}.DIGESTS.sig"
-    if [[ ! -d "$download_dir/gentoo/" ]]; then mkdir -p "$download_dir/gentoo/"; fi
-    echo "[distrib-dl] INFO: Downloading gentoo keyring, checksums and signature..."
-    gpg --keyserver hkps://keys.gentoo.org --recv-keys "$gentoo_gpg_fingerprint"
-    wget -N -nv --show-progress -P "$download_dir/gentoo/" "${gentoo_base_url}${gentoo_gpgkeyring_filename}"
-    wget -N -nv --show-progress -P "$download_dir/gentoo/" "${gentoo_base_url}${gentoo_sums_filename}"
-    gpg --verify "gentoo/${gentoo_sums_filename}"
-    echo "[distrib-dl] INFO: Downloading Gentoo Live ISO image..."
-    wget --continue -N -nv --show-progress -P "$download_dir/gentoo/" "${gentoo_base_url}/${gentoo_iso_filename}"
-    echo "[distrib-dl] INFO: Verifying Gentoo Live ISO image integrity..."
-    cd "$download_dir/gentoo/" && sha512sum --ignore-missing -c <(cat ${gentoo_sums_filename}) && cd -
-}
-
 function download_androidx86() {
     androidx86_base_url='https://osdn.net/frs/redir.php?m=dotsrc&f=android-x86%2F71931%2F'
     androidx86_iso_filename="android-x86_64-${androidx86_version}.iso"
@@ -252,7 +229,6 @@ function _main() {
         if [[ "$distribution" == "proxmox" ]] ; then download_proxmox; fi
         if [[ "$distribution" == "pfsense" ]] ; then download_pfsense; fi
         if [[ "$distribution" == "freebsd" ]] ; then download_freebsd; fi
-        if [[ "$distribution" == "gentoo-live" ]] ; then download_gentoo_live; fi
         if [[ "$distribution" == "androidx86" ]] ; then download_androidx86; fi
         if [[ "$distribution" == "--help" ]]; then echo "Usage: $usage"; exit 1; fi
     done
