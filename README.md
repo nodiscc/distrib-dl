@@ -29,6 +29,7 @@ Available distributions: debian centos tails kali proxmox pfsense freebsd gentoo
 * [pfSense](https://www.pfsense.org/download/)
 * [FreeBSD](https://www.freebsd.org/)
 * [Gentoo Linux](https://www.gentoo.org/downloads/) (Live DVD)
+* [Android x86](https://www.android-x86.org/)
 
 
 ## Configuration
@@ -46,10 +47,9 @@ Architectures and distribution versions are configurable in the script itself.
 * add support for bittorrent downloads (transmission-cli?)
 * add a --check mode: just ensure that wget commands return HTTP code 200
 * automatically check for new versions of distributions (RSS feeds?)
-* support other distros (arch/ubuntu/mint/zorin/alpine/android-x86/fedora/dban/gentoo...)
+* support other distros (arch/ubuntu/mint/zorin/alpine/fedora/dban/gentoo...)
 * support downloading via bittorrent/transmission-cli
 * centos: do not hardcode mirror, let centos.org take us to the closest download
-* add support for android-x86
 * add support for Debian Live
 * add support for [Arch Linux](https://www.archlinux.org/)
 * add support for [GuixSD](https://www.gnu.org/software/guix/)
