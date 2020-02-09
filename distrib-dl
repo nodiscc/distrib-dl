@@ -40,7 +40,7 @@ androidx86_version="9.0-rc1"
 set -o errexit
 
 download_dir="$PWD"
-usage="$0 [OPTIONS] DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...]
+usage="$0 [OPTIONS] DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...] [all]
 Available distributions: debian centos tails kali proxmox pfsense freebsd androidx86
 Options:
 -c        only check that the url returns 200, don't download anything"
@@ -230,6 +230,7 @@ function _main() {
         if [[ "$distribution" == "pfsense" ]] ; then download_pfsense; fi
         if [[ "$distribution" == "freebsd" ]] ; then download_freebsd; fi
         if [[ "$distribution" == "androidx86" ]] ; then download_androidx86; fi
+        if [[ "$distribution" == "all" ]] ; then download_debian && download_centos && download_tails && download_kali && download_proxmox && download_pfsense && download_freebsd && download_androidx86; fi
         if [[ "$distribution" == "--help" ]]; then echo "Usage: $usage"; exit 1; fi
     done
 }
