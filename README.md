@@ -2,8 +2,6 @@
 
 Download and keep up-to-date Linux/BSD distribution ISO images (installers/live images). Can be used to maintain a local ISO image repository.
 
-Downloads will be verified against checksums and GPG keys when available. Checksums/signatures are downloaded as part of the process, they are recorded in the repository for archival/reference purposes.
-
 [![pipeline status](https://gitlab.com/nodiscc/distrib-dl/badges/master/pipeline.svg)](https://gitlab.com/nodiscc/distrib-dl/commits/master)
 
 ## Installation
@@ -32,6 +30,12 @@ Available distributions: debian centos tails kali proxmox pfsense freebsd
 * [FreeBSD](https://www.freebsd.org/)
 * [Android x86](https://www.android-x86.org/)
 
+Downloads will be verified against checksums and GPG keys when available. Checksums/signatures are downloaded as part of the process, they are recorded in the repository for archival/reference purposes. The script will return warnings unless you manually import and trust gpg keys:
+
+```
+gpg: WARNING: This key is not certified with a trusted signature!
+gpg:          There is no indication that the signature belongs to the owner.
+```
 
 ## Configuration
 
