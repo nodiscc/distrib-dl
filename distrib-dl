@@ -19,7 +19,7 @@ tails_architecture="amd64"
 tails_version="4.2.2"
 ### KALI
 kali_architecture="amd64"
-kali_version="2018.4"
+kali_version="2020.1"
 ### CENTOS
 centos_version_major="7"
 centos_version_minor="1908"
