@@ -28,7 +28,7 @@ centos_version_minor="1908"
 # https://www.proxmox.com/en/downloads/category/iso-images-pve
 proxmox_version="6.0-1"
 ### PFSENSE
-pfsense_version="2.4.4"
+pfsense_version="2.4.5"
 pfsense_installer_type="vga" #serial or vga
 ### FREEBSD
 freebsd_version="12.0"
@@ -170,7 +170,7 @@ function download_pfsense {
         elif [[ "$pfsense_installer_type" == "vga" ]]; then pfsense_is_serial=""
         else echo "[distrib-dl] ERROR: invalid installer type for pfsense: $pfsense_installer_type"; exit 1
     fi
-    pfsense_iso_filename="pfSense-CE-memstick-${pfsense_is_serial}${pfsense_version}-RELEASE-amd64.img.gz"
+    pfsense_iso_filename="pfSense-CE-${pfsense_is_serial}${pfsense_version}-RELEASE-amd64.img.gz"
     pfsense_hashes_base_url="https://files.pfsense.org/hashes/"
     if [[ ! -d "$download_dir/pfsense/" ]]; then mkdir --directory-prefix="$download_dir/pfsense/"; fi
     echo "[distrib-dl] INFO: downloading pfsense checksums..."
@@ -180,7 +180,7 @@ function download_pfsense {
     # shellcheck disable=SC2086
     wget $wget_opts --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/pfsense/" "${pfsense_base_url}/${pfsense_iso_filename}"
     echo "[distrib-dl] INFO: verifying pfsense ISO image integrity..."
-    cd "$download_dir/pfsense" && sha256sum --check "pfSense-CE-memstick-${pfsense_is_serial}${pfsense_version}-RELEASE-amd64.img.gz.sha256" && cd -
+    cd "$download_dir/pfsense" && sha256sum --check "pfSense-CE-${pfsense_is_serial}${pfsense_version}-RELEASE-amd64.img.gz.sha256" && cd -
 }
 
 function download_freebsd() {
