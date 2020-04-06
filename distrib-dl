@@ -170,7 +170,7 @@ function download_pfsense {
         elif [[ "$pfsense_installer_type" == "vga" ]]; then pfsense_is_serial=""
         else echo "[distrib-dl] ERROR: invalid installer type for pfsense: $pfsense_installer_type"; exit 1
     fi
-    pfsense_iso_filename="pfSense-CE-${pfsense_is_serial}${pfsense_version}-RELEASE-amd64.img.gz"
+    pfsense_iso_filename="pfSense-CE-memstick-${pfsense_is_serial}${pfsense_version}-RELEASE-amd64.img.gz"
     pfsense_hashes_base_url="https://files.pfsense.org/hashes/"
     if [[ ! -d "$download_dir/pfsense/" ]]; then mkdir --directory-prefix="$download_dir/pfsense/"; fi
     echo "[distrib-dl] INFO: downloading pfsense checksums..."
