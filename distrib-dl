@@ -180,7 +180,7 @@ function download_pfsense {
     # shellcheck disable=SC2086
     wget $wget_opts --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/pfsense/" "${pfsense_base_url}/${pfsense_iso_filename}"
     echo "[distrib-dl] INFO: verifying pfsense ISO image integrity..."
-    cd "$download_dir/pfsense" && sha256sum --check "pfSense-CE-${pfsense_is_serial}${pfsense_version}-RELEASE-amd64.img.gz.sha256" && cd -
+    cd "$download_dir/pfsense" && sha256sum --check "pfSense-CE-memstick-${pfsense_is_serial}${pfsense_version}-RELEASE-amd64.img.gz.sha256" && cd -
 }
 
 function download_freebsd() {
