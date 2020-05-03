@@ -22,8 +22,8 @@ kali_architecture="amd64"
 kali_version="2020.1"
 kali_flavour="live" # live/installer
 ### CENTOS
-centos_version_major="7"
-centos_version_minor="1908"
+centos_version_major="8"
+centos_version_minor=".1.1911"
 ### PROXMOX
 # https://www.proxmox.com/en/downloads/category/iso-images-pve
 proxmox_version="6.0-1"
@@ -76,12 +76,12 @@ function download_debian() {
 function download_centos() {
     # fingerprint: 6341 AB27 53D7 8A78 A7C2  7BB1 24C6 A8A7 F4A8 0EB5
     centos_base_url="https://ftp.osuosl.org/pub/centos/${centos_version_major}/isos/x86_64/"
-    centos_iso_filename="CentOS-${centos_version_major}-x86_64-Minimal-${centos_version_minor}.iso"
+    centos_iso_filename="CentOS-${centos_version_major}${centos_version_minor}-x86_64-boot.iso"
     centos_iso_url="${centos_base_url}/${centos_iso_filename}"
     #centos_iso_url="${centos_base_url}/CentOS-7-live-GNOME-x86_64.iso" #Alternative live image w/ GNOME desktop, disabled
-    centos_key_url="https://www.centos.org/keys/RPM-GPG-KEY-CentOS-${centos_version_major}"
-    centos_sums_sign_url="${centos_base_url}/sha256sum.txt.asc"
-    centos_sums_url="${centos_base_url}/sha256sum.txt"
+    centos_key_url="https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official"
+    centos_sums_sign_url="${centos_base_url}/CHECKSUM.asc"
+    centos_sums_url="${centos_base_url}/CHECKSUM"
     if [[ ! -d "$download_dir/centos/" ]]; then mkdir --directory-prefix="$download_dir/centos/"; fi
     echo "Downloading CentOS keys, cheksums and signature..."
     # shellcheck disable=SC2086
@@ -91,15 +91,15 @@ function download_centos() {
     # shellcheck disable=SC2086
     wget $wget_opts --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/centos/" "$centos_sums_sign_url"
     echo "Importing CentOS GPG key..."
-    gpg --import "$download_dir/centos/RPM-GPG-KEY-CentOS-${centos_version_major}"
+    gpg --import "$download_dir/centos/RPM-GPG-KEY-CentOS-Official"
     echo "Downloading CentOS ISO image..."
     # shellcheck disable=SC2086
     wget $wget_opts --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/centos/" "$centos_iso_url"
     cd "$download_dir/centos/"
     echo "Verifying CentOS signature..."
-    gpg --verify < sha256sum.txt.asc
+    gpg --verify < CHECKSUM.asc
     echo "Verifying CentOS ISO image integrity..."
-    sha256sum -c <(grep "$centos_iso_filename" sha256sum.txt)
+    sha256sum -c <(grep "$centos_iso_filename" CHECKSUM)
     cd -
 }
 
