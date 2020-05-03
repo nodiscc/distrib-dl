@@ -216,11 +216,11 @@ function download_androidx86() {
 
 function _main() {
     wget_opts=""
-    while getopts ":c :h" opt; do
+    while getopts ":ch" opt; do
         case $opt in
             c) wget_opts="--spider"; shift;;
             h) echo "Usage: $usage"; exit 0;;
-            \?) echo "[distrib-dl] ERROR: invalid option -$OPTARG" >&2; exit 1;;
+            \?) echo "[distrib-dl] ERROR: invalid option -$OPTARG" >&2; echo "Usage: $usage"; exit 1;;
         esac
     done
 
