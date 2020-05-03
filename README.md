@@ -17,8 +17,11 @@ Download and keep up-to-date Linux/BSD distribution ISO images (installers/live 
 ## Usage
 
 ```
-./distrib-dl DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...]
-Available distributions: debian centos tails kali proxmox pfsense freebsd
+Usage: ./distrib-dl [OPTIONS] DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...] [all]
+Available distributions: debian centos tails kali proxmox pfsense freebsd androidx86
+Options:
+-c        only check that the url returns 200, don't download anything
+-h        show help
 ```
 
 * [Debian GNU/Linux](https://www.debian.org/)
