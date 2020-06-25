@@ -83,7 +83,7 @@ function download_centos() {
     centos_sums_sign_url="${centos_base_url}/CHECKSUM.asc"
     centos_sums_url="${centos_base_url}/CHECKSUM"
     if [[ ! -d "$download_dir/centos/" ]]; then mkdir --directory-prefix="$download_dir/centos/"; fi
-    echo "Downloading CentOS keys, cheksums and signature..."
+    echo "Downloading CentOS keys, checksums and signature..."
     # shellcheck disable=SC2086
     wget $wget_opts --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/centos/" "$centos_key_url"
     # shellcheck disable=SC2086
@@ -94,12 +94,12 @@ function download_centos() {
     gpg --import "$download_dir/centos/RPM-GPG-KEY-CentOS-Official"
     echo "Downloading CentOS ISO image..."
     # shellcheck disable=SC2086
-    wget $wget_opts --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/centos/" "$centos_iso_url"
+    wget $wget_opts --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/centos/" "$centos_iso_url"
     cd "$download_dir/centos/"
     echo "Verifying CentOS signature..."
     gpg --verify < CHECKSUM.asc
     echo "Verifying CentOS ISO image integrity..."
-    sha256sum -c <(grep "$centos_iso_filename" CHECKSUM)
+    cd "$download_dir/centos" && sha256sum --ignore-missing -c CHECKSUM
     cd -
 }
 
