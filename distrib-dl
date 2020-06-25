@@ -34,6 +34,10 @@ pfsense_installer_type="vga" #serial or vga
 freebsd_version="12.0"
 ### ANDROID X86
 androidx86_version="9.0-rc1"
+### DEBIAN-LIVE-CONFIG
+# https://gitlab.com/nodiscc/debian-live-config
+# https://github.com/nodiscc/debian-live-config/releases/
+debian_live_config_version="2.2.3"
 
 ############################
 
@@ -42,7 +46,7 @@ set -o errexit
 
 download_dir="$PWD"
 usage="$0 [OPTIONS] DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...] [all]
-Available distributions: debian centos tails kali proxmox pfsense freebsd androidx86
+Available distributions: debian centos tails kali proxmox pfsense freebsd androidx86 debian-live-config
 Options:
 -c        only check that the url returns 200, don't download anything
 -h        show help"
@@ -213,6 +217,32 @@ function download_androidx86() {
     wget --continue -N -nv --show-progress -O "$download_dir/androidx86/$androidx86_iso_filename" "${androidx86_base_url}${androidx86_iso_filename}"
 }
 
+function download_debian_live_config() {
+    # https://gitlab.com/nodiscc/debian-live-config
+    debian_live_config_base_url="https://github.com/nodiscc/debian-live-config/releases/download/$debian_live_config_version/"
+    debian_live_config_iso_filename="dlc-${debian_live_config_version}-debian-buster-amd64.hybrid.iso"
+    debian_live_config_key_url="${debian_live_config_base_url}/dlc-release.key"
+    debian_live_config_sums_url="${debian_live_config_base_url}/SHA512SUMS"
+    debian_live_config_sums_sign_url="${debian_live_config_base_url}/SHA512SUMS.sign"
+    if [[ ! -d "$download_dir/debian-live-config/" ]]; then mkdir --directory-prefix="$download_dir/debian-live-config/"; fi
+    echo "Downloading debian-live-config checksums and signature..."
+    # shellcheck disable=SC2086
+    wget $wget_opts --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/debian-live-config/" "$debian_live_config_sums_url"
+    # shellcheck disable=SC2086
+    wget $wget_opts --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/debian-live-config/" "$debian_live_config_sums_sign_url"
+    # shellcheck disable=SC2086
+    wget $wget_opts --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/debian-live-config/" "$debian_live_config_key_url"
+    echo "Importing debian-live-config GPG key..."
+    gpg --import "$download_dir/debian-live-config/dlc-release.key"
+    echo "Verifying debian-live-config signature..."
+    gpg --verify "$download_dir/debian-live-config/SHA512SUMS.sign" "$download_dir/debian-live-config/SHA512SUMS"
+    echo "Downloading debian-live-config ISO image..."
+    # shellcheck disable=SC2086
+    wget $wget_opts --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/debian-live-config/" "$debian_live_config_base_url/$debian_live_config_iso_filename"
+    echo "Verifying debian-live-config ISO image integrity..."
+    cd "$download_dir/debian-live-config/" && sha512sum -c <(cat SHA512SUMS) && cd -
+}
+
 
 function _main() {
     wget_opts=""
@@ -233,7 +263,8 @@ function _main() {
         if [[ "$distribution" == "pfsense" ]] ; then download_pfsense; fi
         if [[ "$distribution" == "freebsd" ]] ; then download_freebsd; fi
         if [[ "$distribution" == "androidx86" ]] ; then download_androidx86; fi
-        if [[ "$distribution" == "all" ]] ; then download_debian && download_centos && download_tails && download_kali && download_proxmox && download_pfsense && download_freebsd && download_androidx86; fi
+        if [[ "$distribution" == "debian-live-config" ]] ; then download_debian_live_config; fi
+        if [[ "$distribution" == "all" ]] ; then download_debian && download_centos && download_tails && download_kali && download_proxmox && download_pfsense && download_freebsd && download_androidx86 && download_debian_live_config; fi
     done
 }
 

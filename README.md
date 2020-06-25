@@ -18,7 +18,7 @@ Download and keep up-to-date Linux/BSD distribution ISO images (installers/live 
 
 ```
 Usage: ./distrib-dl [OPTIONS] DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...] [all]
-Available distributions: debian centos tails kali proxmox pfsense freebsd androidx86
+Available distributions: debian centos tails kali proxmox pfsense freebsd androidx86 debian-live-config
 Options:
 -c        only check that the url returns 200, don't download anything
 -h        show help
@@ -32,6 +32,7 @@ Options:
 * [pfSense](https://www.pfsense.org/download/)
 * [FreeBSD](https://www.freebsd.org/)
 * [Android x86](https://www.android-x86.org/)
+* [debian-live-config](https://debian-live-config.readthedocs.io/)
 
 Downloads will be verified against checksums and GPG keys when available. Checksums/signatures are downloaded as part of the process, they are recorded in the repository for archival/reference purposes. The script will return warnings unless you manually import and trust gpg keys:
 
