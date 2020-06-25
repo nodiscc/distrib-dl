@@ -23,7 +23,7 @@ kali_version="2020.1"
 kali_flavour="live" # live/installer
 ### CENTOS
 centos_version_major="8"
-centos_version_minor=".1.1911"
+centos_version_minor=".2.2004"
 ### PROXMOX
 # https://www.proxmox.com/en/downloads/category/iso-images-pve
 proxmox_version="6.0-1"
