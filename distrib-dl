@@ -72,7 +72,7 @@ function download_debian() {
     gpg --verify "$download_dir/debian/SHA512SUMS.sign" "$download_dir/debian/SHA512SUMS"
     echo "Downloading Debian ISO image..."
     # shellcheck disable=SC2086
-    wget $wget_opts --continue --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/debian/" "$debian_base_url/$debian_iso_filename"
+    wget $wget_opts --timestamping --no-verbose --show-progress --directory-prefix="$download_dir/debian/" "$debian_base_url/$debian_iso_filename"
     echo "Verifying Debian ISO image integrity..."
     cd "$download_dir/debian/" && sha512sum -c <(cat SHA512SUMS) && cd -
 }
