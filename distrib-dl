@@ -33,7 +33,7 @@ pfsense_installer_type="vga" #serial or vga
 ### FREEBSD
 freebsd_version="12.0"
 ### ANDROID X86
-androidx86_version="9.0-rc1"
+androidx86_version="9.0-r2"
 ### DEBIAN-LIVE-CONFIG
 # https://gitlab.com/nodiscc/debian-live-config
 # https://github.com/nodiscc/debian-live-config/releases/
