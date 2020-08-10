@@ -38,6 +38,8 @@ androidx86_version="9.0-r2"
 # https://gitlab.com/nodiscc/debian-live-config
 # https://github.com/nodiscc/debian-live-config/releases/
 debian_live_config_version="2.2.3"
+### FEDORA
+fedora_version="32-1.6"
 
 ############################
 
@@ -46,7 +48,7 @@ set -o errexit
 
 download_dir="$PWD"
 usage="$0 [OPTIONS] DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...] [all]
-Available distributions: debian centos tails kali proxmox pfsense freebsd androidx86 debian-live-config
+Available distributions: debian centos tails kali proxmox pfsense freebsd androidx86 debian-live-config fedora
 Options:
 -c        only check that the url returns 200, don't download anything
 -h        show help"
@@ -244,6 +246,30 @@ function download_debian_live_config() {
 }
 
 
+function download_fedora() {
+    fedora_iso_filename="Fedora-Workstation-Live-x86_64-${fedora_version}.iso"
+    fedora_iso_url="https://download.fedoraproject.org/pub/fedora/linux/releases/32/Workstation/x86_64/iso/${fedora_iso_filename}"
+    fedora_sums_filename="Fedora-Workstation-32-1.6-x86_64-CHECKSUM"
+    fedora_sums_url="https://getfedora.org/static/checksums/${fedora_sums_filename}"
+    fedora_key_filename="fedora.gpg"
+    fedora_key_url="https://getfedora.org/static/${fedora_key_filename}"
+    if [[ ! -d "$download_dir/fedora/" ]]; then mkdir -p "$download_dir/fedora/"; fi
+    echo "Downloading fedora checksums and signature..."
+    # shellcheck disable=SC2086
+    wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/fedora/" "$fedora_sums_url"
+    # shellcheck disable=SC2086
+    wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/fedora/" "$fedora_key_url"
+    echo "Importing fedora GPG key..."
+    gpg --import "$download_dir/fedora/$fedora_key_filename"
+    echo "Verifying fedora signature..."
+    cd "$download_dir/fedora/" && gpg --verify-files "$fedora_sums_filename"
+    echo "Downloading fedora ISO image..."
+    # shellcheck disable=SC2086
+    wget $wget_opts --continue --timestamping --show-progress --directory-prefix="$download_dir/fedora/" "$fedora_iso_url"
+    echo "Verifying fedora ISO image integrity..."
+    sha256sum -c "$fedora_sums_filename" && cd -
+}
+
 function _main() {
     wget_opts=""
     while getopts ":ch" opt; do
@@ -264,7 +290,8 @@ function _main() {
         if [[ "$distribution" == "freebsd" ]] ; then download_freebsd; fi
         if [[ "$distribution" == "androidx86" ]] ; then download_androidx86; fi
         if [[ "$distribution" == "debian-live-config" ]] ; then download_debian_live_config; fi
-        if [[ "$distribution" == "all" ]] ; then download_debian && download_centos && download_tails && download_kali && download_proxmox && download_pfsense && download_freebsd && download_androidx86 && download_debian_live_config; fi
+        if [[ "$distribution" == "fedora" ]] ; then download_fedora; fi
+        if [[ "$distribution" == "all" ]] ; then download_debian && download_centos && download_tails && download_kali && download_proxmox && download_pfsense && download_freebsd && download_androidx86 && download_debian_live_config && download_fedora; fi
     done
 }
 

@@ -18,7 +18,7 @@ Download and keep up-to-date Linux/BSD distribution ISO images (installers/live 
 
 ```
 Usage: ./distrib-dl [OPTIONS] DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...] [all]
-Available distributions: debian centos tails kali proxmox pfsense freebsd androidx86 debian-live-config
+Available distributions: debian centos tails kali proxmox pfsense freebsd androidx86 debian-live-config fedora
 Options:
 -c        only check that the url returns 200, don't download anything
 -h        show help
@@ -33,6 +33,7 @@ Options:
 * [FreeBSD](https://www.freebsd.org/)
 * [Android x86](https://www.android-x86.org/)
 * [debian-live-config](https://debian-live-config.readthedocs.io/)
+* [Fedora Workstation](https://getfedora.org/en/workstation/)
 
 Downloads will be verified against checksums and GPG keys when available. Checksums/signatures are downloaded as part of the process, they are recorded in the repository for archival/reference purposes. The script will return warnings unless you manually import and trust gpg keys:
 
@@ -63,7 +64,6 @@ Architectures and distribution versions are configurable in the script itself.
 * add support for [Arch Linux](https://www.archlinux.org/)
 * add support for [GuixSD](https://www.gnu.org/software/guix/)
 * add support for [NixOS Linux](https://nixos.org/)
-* add support for [Fedora](https://getfedora.org/)
 * add support for [Ubuntu](https://www.ubuntu.com/)
 * add support for [OpenBSD](https://www.openbsd.org/)
 * add support for [Lakka](https://www.lakka.tv/)
