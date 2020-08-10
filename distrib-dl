@@ -5,7 +5,6 @@
 set -o errexit
 set -o nounset
 set -o pipefail
-usage="$0 DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...]"
 
 ##############################
 # Configuration
