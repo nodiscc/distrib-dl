@@ -6,7 +6,7 @@ Download and keep up-to-date Linux/BSD distribution ISO images (installers/live 
 
 ## Installation
 
-`git clone https://github.com/nodiscc/distrib-dl`
+`git clone https://gitlab.com/nodiscc/distrib-dl`
 
 ## Requirements
 
@@ -49,7 +49,7 @@ Architectures and distribution versions are configurable in the script itself.
 ## Contributing/testing/support
 
  * Patches and pull requests welcome.
- * File bugs or possible improvements at https://github.com/nodiscc/distrib-dl/issues
+ * File bugs or possible improvements at https://gitlab.com/nodiscc/distrib-dl/issues
  * Run `shellcheck` against the script to check for errors/styling issues.
 
 ## TODO
@@ -79,3 +79,8 @@ Architectures and distribution versions are configurable in the script itself.
 ## License
 
 [MIT](https://opensource.org/licenses/MIT)
+
+## Mirrors
+
+- https://stdout.root.sx/gitea/nodiscc/distrib-dl
+- https://gitlab.com/nodiscc/distrib-dl
