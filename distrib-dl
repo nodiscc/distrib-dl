@@ -69,13 +69,19 @@ function download_debian() {
     wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/debian/" "$debian_sums_url"
     # shellcheck disable=SC2086
     wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/debian/" "$debian_sums_sign_url"
-    echo "Verifying Debian signature..."
-    gpg --verify "$download_dir/debian/SHA512SUMS.sign" "$download_dir/debian/SHA512SUMS"
+    if [[ "$verify" == "true" ]]; then
+        echo "Verifying Debian signature..."
+        gpg --verify "$download_dir/debian/SHA512SUMS.sign" "$download_dir/debian/SHA512SUMS"
+    fi
     echo "Downloading Debian ISO image..."
     # shellcheck disable=SC2086
     wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/debian/" "$debian_base_url/$debian_iso_filename"
-    echo "Verifying Debian ISO image integrity..."
-    cd "$download_dir/debian/" && sha512sum -c <(cat SHA512SUMS) && cd -
+    if [[ "$verify" == "true" ]]; then
+        echo "Verifying Debian ISO image integrity..."
+        cd "$download_dir/debian/"
+        sha512sum -c <(cat SHA512SUMS)
+        cd -
+    fi
 }
 
 function download_centos() {
@@ -88,24 +94,28 @@ function download_centos() {
     centos_sums_sign_url="${centos_base_url}/CHECKSUM.asc"
     centos_sums_url="${centos_base_url}/CHECKSUM"
     if [[ ! -d "$download_dir/centos/" ]]; then mkdir -p "$download_dir/centos/"; fi
-    echo "Downloading CentOS keys, checksums and signature..."
+    echo "[distrib-dl] INFO: Downloading CentOS keys, checksums and signature..."
     # shellcheck disable=SC2086
     wget $wget_opts --continue --timestamping --show-progress --directory-prefix="$download_dir/centos/" "$centos_key_url"
     # shellcheck disable=SC2086
     wget $wget_opts --continue --timestamping --show-progress --directory-prefix="$download_dir/centos/" "$centos_sums_url"
     # shellcheck disable=SC2086
     wget $wget_opts --continue --timestamping --show-progress --directory-prefix="$download_dir/centos/" "$centos_sums_sign_url"
-    echo "Importing CentOS GPG key..."
-    gpg --import "$download_dir/centos/RPM-GPG-KEY-CentOS-Official"
-    echo "Downloading CentOS ISO image..."
+    if [[ "$verify" == "true" ]]; then
+        echo "[distrib-dl] INFO: Importing CentOS GPG key..."
+        gpg --import "$download_dir/centos/RPM-GPG-KEY-CentOS-Official"
+    fi
+    echo "[distrib-dl] INFO: Downloading CentOS ISO image..."
     # shellcheck disable=SC2086
     wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/centos/" "$centos_iso_url"
-    cd "$download_dir/centos/"
-    echo "Verifying CentOS signature..."
-    gpg --verify < CHECKSUM.asc
-    echo "Verifying CentOS ISO image integrity..."
-    cd "$download_dir/centos" && sha256sum --ignore-missing -c CHECKSUM
-    cd -
+    if [[ "$verify" == "true" ]]; then
+        echo "[distrib-dl] INFO: Verifying CentOS signature..."
+        cd "$download_dir/centos/"
+        gpg --verify < CHECKSUM.asc
+        echo "[distrib-dl] INFO: Verifying CentOS ISO image integrity..."
+        cd "$download_dir/centos" && sha256sum --ignore-missing -c CHECKSUM
+        cd -
+    fi
 }
 
 function download_tails() {
@@ -113,21 +123,25 @@ function download_tails() {
     tails_iso_url="https://dl.amnesia.boum.org/tails/stable/tails-${tails_architecture}-${tails_version}/tails-${tails_architecture}-${tails_version}.iso"
     tails_key_url="https://tails.boum.org/tails-signing.key"
     tails_sig_url="https://tails.boum.org/torrents/files/tails-${tails_architecture}-${tails_version}.iso.sig"
-    echo "downloading Tails key and signature..."
+    echo "[distrib-dl] INFO: downloading Tails key and signature..."
     # shellcheck disable=SC2086
     wget $wget_opts --continue --timestamping --show-progress --directory-prefix="$download_dir/tails/" "$tails_key_url"
     # shellcheck disable=SC2086
     wget $wget_opts --continue --timestamping --show-progress --directory-prefix="$download_dir/tails/" "$tails_sig_url"
-    echo "Importing tails GPG key..."
-    gpg --import "$download_dir/tails/tails-signing.key"
-    echo "downloading Tails ISO image"
+    if [[ "$verify" == "true" ]]; then
+        echo "[distrib-dl] INFO: Importing tails GPG key..."
+        gpg --import "$download_dir/tails/tails-signing.key"
+    fi
+    echo "[distrib-dl] INFO: downloading Tails ISO image"
     #Force HTTPS but ignore certificate checks since Tails CDN can point to other servers than dl.amnesia.boum.org
     # shellcheck disable=SC2086
     wget $wget_opts --continue --no-check-certificate --timestamping --show-progress --directory-prefix="$download_dir/tails/" "$tails_iso_url"
-    echo "verifying Tails signature..."
-    tails_sig_filename="tails-${tails_architecture}-${tails_version}.iso.sig"
-    tails_iso_filename="tails-${tails_architecture}-${tails_version}.iso"
-    gpg --keyid-format 0xlong --verify "$download_dir/tails/$tails_sig_filename" "$download_dir/tails/$tails_iso_filename"
+    if [[ "$verify" == "true" ]]; then
+        echo "[distrib-dl] INFO: verifying Tails signature..."
+        tails_sig_filename="tails-${tails_architecture}-${tails_version}.iso.sig"
+        tails_iso_filename="tails-${tails_architecture}-${tails_version}.iso"
+        gpg --keyid-format 0xlong --verify "$download_dir/tails/$tails_sig_filename" "$download_dir/tails/$tails_iso_filename"
+    fi
 }
 
 function download_kali() {
@@ -143,14 +157,20 @@ function download_kali() {
     # shellcheck disable=SC2086
     wget $wget_opts --continue --timestamping --show-progress --directory-prefix="$download_dir/kali/" "$kali_key_url"
     echo "[distrib-dl] INFO: Importing Kali GPG key..."
-    gpg --import "$download_dir/kali/archive-key.asc"
-    echo "Verifying Kali signature..."
-    gpg --verify "$download_dir/kali/SHA256SUMS.gpg" "$download_dir/kali/SHA256SUMS"
+    if [[ "$verify" == "true" ]]; then
+        gpg --import "$download_dir/kali/archive-key.asc"
+        echo "Verifying Kali signature..."
+        gpg --verify "$download_dir/kali/SHA256SUMS.gpg" "$download_dir/kali/SHA256SUMS"
+    fi
     echo "[distrib-dl] INFO: Downloading Kali ISO image..."
     # shellcheck disable=SC2086
     wget $wget_opts --continue --timestamping --show-progress --directory-prefix="$download_dir/kali/" "$kali_base_url/$kali_iso_filename"
-    echo "[distrib-dl] INFO: Verifying Kali ISO image integrity..."
-    cd "$download_dir/kali/" && sha256sum -c <(grep "$kali_iso_filename" SHA256SUMS) && cd -
+    if [[ "$verify" == "true" ]]; then
+        echo "[distrib-dl] INFO: Verifying Kali ISO image integrity..."
+        cd "$download_dir/kali/"
+        sha256sum -c <(grep "$kali_iso_filename" SHA256SUMS)
+        cd -
+    fi
 }
 
 function download_proxmox {
@@ -185,8 +205,10 @@ function download_pfsense {
     echo "[distrib-dl] INFO: downloading pfsense ISO image..."
     # shellcheck disable=SC2086
     wget $wget_opts --continue --timestamping --show-progress --directory-prefix="$download_dir/pfsense/" "${pfsense_base_url}/${pfsense_iso_filename}"
-    echo "[distrib-dl] INFO: verifying pfsense ISO image integrity..."
-    cd "$download_dir/pfsense" && sha256sum --check "pfSense-CE-memstick-${pfsense_is_serial}${pfsense_version}-RELEASE-amd64.img.gz.sha256" && cd -
+    if [[ "$verify" == "true" ]]; then
+        echo "[distrib-dl] INFO: verifying pfsense ISO image integrity..."
+        cd "$download_dir/pfsense" && sha256sum --check "pfSense-CE-memstick-${pfsense_is_serial}${pfsense_version}-RELEASE-amd64.img.gz.sha256" && cd -
+    fi
 }
 
 function download_freebsd() {
@@ -201,12 +223,16 @@ function download_freebsd() {
     wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/freebsd/" "$freebsd_gpgkeyring_url"
     # shellcheck disable=SC2086
     wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/freebsd/" "$freebsd_sums_url"
-    gpg --verify "freebsd/$freebsd_sums_filename"
+    if [[ "$verify" == "true" ]]; then
+        gpg --verify "freebsd/$freebsd_sums_filename"
+    fi
     echo "[distrib-dl] INFO: Downloading freebsd ISO image..."
     # shellcheck disable=SC2086
     wget $wget_opts --continue --timestamping --show-progress --directory-prefix="$download_dir/freebsd/" "$freebsd_base_url/$freebsd_iso_filename"
-    echo "Verifying freebsd ISO image integrity..."
-    cd "$download_dir/freebsd/" && sha512sum --ignore-missing -c <(cat ${freebsd_sums_filename}) && cd -
+    if [[ "$verify" == "true" ]]; then
+        echo "Verifying freebsd ISO image integrity..."
+        cd "$download_dir/freebsd/" && sha512sum --ignore-missing -c <(cat ${freebsd_sums_filename}) && cd -
+    fi
 }
 
 function download_androidx86() {
@@ -215,7 +241,8 @@ function download_androidx86() {
     if [[ ! -d "$download_dir/androidx86/" ]]; then mkdir -p "$download_dir/androidx86/"; fi
     echo "[distrib-dl] INFO: Downloading Android x86 ISO image..."
     echo "[distrib-dl] WARNING: Android x86 ISO image will not be checked for integrity/authenticity..."
-    wget --continue -N -nv --show-progress -O "$download_dir/androidx86/$androidx86_iso_filename" "${androidx86_base_url}${androidx86_iso_filename}"
+    # shellcheck disable=SC2086
+    wget $wget_opts --continue -N -nv --show-progress -O "$download_dir/androidx86/$androidx86_iso_filename" "${androidx86_base_url}${androidx86_iso_filename}"
 }
 
 function download_debian_live_config() {
@@ -233,15 +260,19 @@ function download_debian_live_config() {
     wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/debian-live-config/" "$debian_live_config_sums_sign_url"
     # shellcheck disable=SC2086
     wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/debian-live-config/" "$debian_live_config_key_url"
-    echo "Importing debian-live-config GPG key..."
-    gpg --import "$download_dir/debian-live-config/dlc-release.key"
-    echo "Verifying debian-live-config signature..."
-    gpg --verify "$download_dir/debian-live-config/SHA512SUMS.sign" "$download_dir/debian-live-config/SHA512SUMS"
+    if [[ "$verify" == "true" ]]; then
+        echo "Importing debian-live-config GPG key..."
+        gpg --import "$download_dir/debian-live-config/dlc-release.key"
+        echo "Verifying debian-live-config signature..."
+        gpg --verify "$download_dir/debian-live-config/SHA512SUMS.sign" "$download_dir/debian-live-config/SHA512SUMS"
+    fi
     echo "Downloading debian-live-config ISO image..."
     # shellcheck disable=SC2086
     wget $wget_opts --continue --timestamping --show-progress --directory-prefix="$download_dir/debian-live-config/" "$debian_live_config_base_url/$debian_live_config_iso_filename"
-    echo "Verifying debian-live-config ISO image integrity..."
-    cd "$download_dir/debian-live-config/" && sha512sum -c <(cat SHA512SUMS) && cd -
+    if [[ "$verify" == "true" ]]; then
+        echo "Verifying debian-live-config ISO image integrity..."
+        cd "$download_dir/debian-live-config/" && sha512sum -c <(cat SHA512SUMS) && cd -
+    fi
 }
 
 
@@ -258,22 +289,27 @@ function download_fedora() {
     wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/fedora/" "$fedora_sums_url"
     # shellcheck disable=SC2086
     wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/fedora/" "$fedora_key_url"
-    echo "Importing fedora GPG key..."
-    gpg --import "$download_dir/fedora/$fedora_key_filename"
-    echo "Verifying fedora signature..."
-    cd "$download_dir/fedora/" && gpg --verify-files "$fedora_sums_filename"
+    if [[ "$verify" == "true" ]]; then
+        echo "Importing fedora GPG key..."
+        gpg --import "$download_dir/fedora/$fedora_key_filename"
+        echo "Verifying fedora signature..."
+        cd "$download_dir/fedora/" && gpg --verify-files "$fedora_sums_filename"
+    fi
     echo "Downloading fedora ISO image..."
     # shellcheck disable=SC2086
     wget $wget_opts --continue --timestamping --show-progress --directory-prefix="$download_dir/fedora/" "$fedora_iso_url"
-    echo "Verifying fedora ISO image integrity..."
-    sha256sum -c "$fedora_sums_filename" && cd -
+    if [[ "$verify" == "true" ]]; then
+        echo "Verifying fedora ISO image integrity..."
+        sha256sum -c "$fedora_sums_filename" && cd -
+    fi
 }
 
 function _main() {
     wget_opts=""
+    verify="true"
     while getopts ":ch" opt; do
         case $opt in
-            c) wget_opts="--spider"; shift;;
+            c) wget_opts="--spider"; verify="false"; shift;;
             h) echo "Usage: $usage"; exit 0;;
             \?) echo "[distrib-dl] ERROR: invalid option -$OPTARG" >&2; echo "Usage: $usage"; exit 1;;
         esac
