@@ -6,4 +6,4 @@ test:
   - export LC_ALL=C.UTF-8
   - export LANG=C.UTF-8
   - shellcheck distrib-dl
-  - ./distrib-dl -c debian centos tails kali proxmox pfsense freebsd androidx86
+  - ./distrib-dl -c all
