@@ -78,9 +78,7 @@ function download_debian() {
     wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/debian/" "$debian_base_url/$debian_iso_filename"
     if [[ "$verify" == "true" ]]; then
         echo "Verifying Debian ISO image integrity..."
-        cd "$download_dir/debian/"
-        sha512sum -c <(cat SHA512SUMS)
-        cd -
+        (cd "$download_dir/debian/" && sha512sum -c <(cat SHA512SUMS))
     fi
 }
 
@@ -110,11 +108,9 @@ function download_centos() {
     wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/centos/" "$centos_iso_url"
     if [[ "$verify" == "true" ]]; then
         echo "[distrib-dl] INFO: Verifying CentOS signature..."
-        cd "$download_dir/centos/"
-        gpg --verify < CHECKSUM.asc
+        (cd "$download_dir/centos/" &&  gpg --verify < CHECKSUM.asc)
         echo "[distrib-dl] INFO: Verifying CentOS ISO image integrity..."
-        cd "$download_dir/centos" && sha256sum --ignore-missing -c CHECKSUM
-        cd -
+        (cd "$download_dir/centos" && sha256sum --ignore-missing -c CHECKSUM)
     fi
 }
 
@@ -167,9 +163,7 @@ function download_kali() {
     wget $wget_opts --continue --timestamping --show-progress --directory-prefix="$download_dir/kali/" "$kali_base_url/$kali_iso_filename"
     if [[ "$verify" == "true" ]]; then
         echo "[distrib-dl] INFO: Verifying Kali ISO image integrity..."
-        cd "$download_dir/kali/"
-        sha256sum -c <(grep "$kali_iso_filename" SHA256SUMS)
-        cd -
+        (cd "$download_dir/kali/" && sha256sum -c <(grep "$kali_iso_filename" SHA256SUMS))
     fi
 }
 
@@ -207,7 +201,7 @@ function download_pfsense {
     wget $wget_opts --continue --timestamping --show-progress --directory-prefix="$download_dir/pfsense/" "${pfsense_base_url}/${pfsense_iso_filename}"
     if [[ "$verify" == "true" ]]; then
         echo "[distrib-dl] INFO: verifying pfsense ISO image integrity..."
-        cd "$download_dir/pfsense" && sha256sum --check "pfSense-CE-memstick-${pfsense_is_serial}${pfsense_version}-RELEASE-amd64.img.gz.sha256" && cd -
+        (cd "$download_dir/pfsense" && sha256sum --check "pfSense-CE-memstick-${pfsense_is_serial}${pfsense_version}-RELEASE-amd64.img.gz.sha256")
     fi
 }
 
@@ -231,7 +225,7 @@ function download_freebsd() {
     wget $wget_opts --continue --timestamping --show-progress --directory-prefix="$download_dir/freebsd/" "$freebsd_base_url/$freebsd_iso_filename"
     if [[ "$verify" == "true" ]]; then
         echo "Verifying freebsd ISO image integrity..."
-        cd "$download_dir/freebsd/" && sha512sum --ignore-missing -c <(cat ${freebsd_sums_filename}) && cd -
+        (cd "$download_dir/freebsd/" && sha512sum --ignore-missing -c <(cat ${freebsd_sums_filename}))
     fi
 }
 
@@ -271,7 +265,7 @@ function download_debian_live_config() {
     wget $wget_opts --continue --timestamping --show-progress --directory-prefix="$download_dir/debian-live-config/" "$debian_live_config_base_url/$debian_live_config_iso_filename"
     if [[ "$verify" == "true" ]]; then
         echo "Verifying debian-live-config ISO image integrity..."
-        cd "$download_dir/debian-live-config/" && sha512sum -c <(cat SHA512SUMS) && cd -
+        (cd "$download_dir/debian-live-config/" && sha512sum -c <(cat SHA512SUMS))
     fi
 }
 
@@ -293,14 +287,14 @@ function download_fedora() {
         echo "Importing fedora GPG key..."
         gpg --import "$download_dir/fedora/$fedora_key_filename"
         echo "Verifying fedora signature..."
-        cd "$download_dir/fedora/" && gpg --verify-files "$fedora_sums_filename"
+        (cd "$download_dir/fedora/" && gpg --verify-files "$fedora_sums_filename")
     fi
     echo "Downloading fedora ISO image..."
     # shellcheck disable=SC2086
     wget $wget_opts --continue --timestamping --show-progress --directory-prefix="$download_dir/fedora/" "$fedora_iso_url"
     if [[ "$verify" == "true" ]]; then
         echo "Verifying fedora ISO image integrity..."
-        sha256sum -c "$fedora_sums_filename" && cd -
+        (cd "$download_dir/fedora" && sha256sum -c "$fedora_sums_filename")
     fi
 }
 
