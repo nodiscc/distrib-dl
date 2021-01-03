@@ -12,7 +12,7 @@ set -o pipefail
 ### DEBIAN
 # one of: amd64-i386 amd64 armel armhf i386 ia64 kfreebsd-amd64 kfreebsd-i386 mips mipsel multi-arch powerpc s390 s390x source sparc
 debian_architecture="amd64-i386"
-debian_version="10.6.0"
+debian_version="10.7.0"
 ### TAILS
 tails_architecture="amd64"
 tails_version="4.13"
