@@ -15,7 +15,7 @@ debian_architecture="amd64-i386"
 debian_version="10.7.0"
 ### TAILS
 tails_architecture="amd64"
-tails_version="4.13"
+tails_version="4.14"
 ### KALI
 kali_architecture="amd64"
 kali_version="2020.1b"
@@ -25,7 +25,7 @@ centos_version_major="8"
 centos_version_minor=".2.2004"
 ### PROXMOX
 # https://www.proxmox.com/en/downloads/category/iso-images-pve
-proxmox_version="6.2-1"
+proxmox_version="6.3-1"
 ### PFSENSE
 pfsense_version="2.4.5"
 pfsense_installer_type="vga" #serial or vga
