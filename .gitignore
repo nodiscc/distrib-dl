@@ -4,7 +4,7 @@ kali/kali-linux-2020.1b-live-amd64.iso
 kali/kali-linux-2020.1b-installer-amd64.iso
 tails/tails-amd64-4.15.1.iso
 proxmox/proxmox-ve_6.3-1.iso
-pfsense/pfSense-CE-memstick-2.4.5-RELEASE-amd64.img.gz
+pfsense/pfSense-CE-memstick-2.5.0-RELEASE-amd64.img.gz
 freebsd/FreeBSD-12.0-RELEASE-amd64-memstick.img
 androidx86/android-x86_64-9.0-r2.iso
 debian-live-config/dlc-2.2.3-debian-buster-amd64.hybrid.iso
