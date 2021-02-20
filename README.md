@@ -55,9 +55,7 @@ Architectures and distribution versions are configurable in the script itself.
 ## TODO
 
 * add support for bittorrent downloads (transmission-cli?)
-* add a --check mode: just ensure that wget commands return HTTP code 200
 * automatically check for new versions of distributions (RSS feeds?)
-* support other distros (arch/ubuntu/mint/zorin/alpine/fedora/dban/...)
 * support downloading via bittorrent/transmission-cli
 * centos: do not hardcode mirror, let centos.org take us to the closest download
 * add support for Debian Live
