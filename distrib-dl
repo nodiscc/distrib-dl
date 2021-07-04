@@ -18,7 +18,7 @@ tails_architecture="amd64"
 tails_version="4.18"
 ### KALI
 kali_architecture="amd64"
-kali_version="2020.1b"
+kali_version="2021.2"
 kali_flavour="live" # live/installer
 ### CENTOS
 centos_version_major="8"
@@ -144,7 +144,7 @@ function download_tails() {
 function download_kali() {
     kali_base_url="https://cdimage.kali.org/kali-$kali_version/"
     kali_iso_filename="kali-linux-$kali_version-$kali_flavour-$kali_architecture.iso"
-    kali_key_url="https://www.kali.org/archive-key.asc"
+    kali_key_url="https://archive.kali.org/archive-key.asc"
     if [[ ! -d "$download_dir/kali/" ]]; then mkdir -p "$download_dir/kali/"; fi
     echo "Downloading Kali checksums, key and signature..."
     # shellcheck disable=SC2086

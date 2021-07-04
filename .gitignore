@@ -1,7 +1,7 @@
 centos/CentOS-8.2.2004-x86_64-boot.iso
 debian/firmware-10.10.0-amd64-i386-netinst.iso
-kali/kali-linux-2020.1b-live-amd64.iso
-kali/kali-linux-2020.1b-installer-amd64.iso
+kali/kali-linux-2021.2-live-amd64.iso
+kali/kali-linux-2020.2-installer-amd64.iso
 tails/tails-amd64-4.18.iso
 proxmox/proxmox-ve_6.3-1.iso
 pfsense/pfSense-CE-memstick-2.5.0-RELEASE-amd64.img.gz
