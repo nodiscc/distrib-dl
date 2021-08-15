@@ -15,7 +15,7 @@ debian_architecture="amd64-i386"
 debian_version="10.10.0"
 ### TAILS
 tails_architecture="amd64"
-tails_version="4.20"
+tails_version="4.21"
 ### KALI
 kali_architecture="amd64"
 kali_version="2021.2"
