@@ -13,6 +13,10 @@ set -o pipefail
 # one of: amd64-i386 amd64 armel armhf i386 ia64 kfreebsd-amd64 kfreebsd-i386 mips mipsel multi-arch powerpc s390 s390x source sparc
 debian_architecture="amd64-i386"
 debian_version="11.0.0"
+# one of: amd64, i386
+debian_live_architecture="amd64"
+# one of: cinnamon gnome kde lxde lxqt mate xfce
+debian_live_desktop_environment="xfce"
 ### TAILS
 tails_architecture="amd64"
 tails_version="4.21"
@@ -48,7 +52,7 @@ set -o errexit
 
 download_dir="$PWD"
 usage="$0 [OPTIONS] DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...] [all]
-Available distributions: debian centos tails kali proxmox pfsense freebsd androidx86 debian-live-config fedora
+Available distributions: debian debian-live centos tails kali proxmox pfsense freebsd androidx86 debian-live-config fedora
 Options:
 -c        only check that the url returns 200, don't download anything
 -h        show help"
@@ -80,6 +84,34 @@ function download_debian() {
     if [[ "$verify" == "true" ]]; then
         echo "Verifying Debian ISO image integrity..."
         (cd "$download_dir/debian/" && sha512sum -c <(cat SHA512SUMS))
+    fi
+}
+
+function download_debian_live() {
+    # Official netinstall image without firmwares (disabled)
+    #debian_live_base_url="https://cdimage.debian.org/debian-cd/current-live/${debian_live_architecture}/iso-hybrid/"
+    #debian_iso_filename="debian-live-${debian_version}-${debian_live_architecture}-${debian_live_desktop_environment}.iso"
+    # Unofficial image including firmwares
+    debian_live_base_url="https://cdimage.debian.org/cdimage/unofficial/non-free/cd-including-firmware/current-live/${debian_live_architecture}/iso-hybrid/"
+    debian_live_iso_filename="debian-live-${debian_version}-${debian_live_architecture}-${debian_live_desktop_environment}+nonfree.iso"
+    debian_live_sums_url="${debian_live_base_url}/SHA512SUMS"
+    debian_live_sums_sign_url="${debian_live_base_url}/SHA512SUMS.sign"
+    if [[ ! -d "$download_dir/debian-live/" ]]; then mkdir -p "$download_dir/debian-live/"; fi
+    echo "Downloading Debian Live checksums and signature..."
+    # shellcheck disable=SC2086
+    wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/debian-live/" "$debian_live_sums_url"
+    # shellcheck disable=SC2086
+    wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/debian-live/" "$debian_live_sums_sign_url"
+    if [[ "$verify" == "true" ]]; then
+        echo "Verifying Debian Live signature..."
+        gpg --verify "$download_dir/debian-live/SHA512SUMS.sign" "$download_dir/debian-live/SHA512SUMS"
+    fi
+    echo "Downloading Debian Live ISO image..."
+    # shellcheck disable=SC2086
+    wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/debian-live/" "$debian_live_base_url/$debian_live_iso_filename"
+    if [[ "$verify" == "true" ]]; then
+        echo "Verifying Debian Live ISO image integrity..."
+        (cd "$download_dir/debian-live/" && sha512sum --ignore-missing -c <(cat SHA512SUMS))
     fi
 }
 
@@ -313,6 +345,7 @@ function _main() {
 
     for distribution in "$@"; do
         if [[ "$distribution" == "debian" ]] ; then download_debian; fi
+        if [[ "$distribution" == "debian-live" ]] ; then download_debian_live; fi
         if [[ "$distribution" == "centos" ]] ; then download_centos; fi
         if [[ "$distribution" == "tails" ]] ; then download_tails; fi
         if [[ "$distribution" == "kali" ]] ; then download_kali; fi

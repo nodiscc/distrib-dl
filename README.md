@@ -24,7 +24,7 @@ Options:
 -h        show help
 ```
 
-* [Debian GNU/Linux](https://www.debian.org/)
+* [Debian GNU/Linux](https://www.debian.org/) (_[netinstall](https://www.debian.org/distrib/netinst)_ and _[live](https://www.debian.org/CD/live/)_)
 * [CentOS](https://www.centos.org/)
 * [Tails](https://tails.boum.org/)
 * [Kali](https://www.kali.org/)
@@ -58,7 +58,6 @@ Architectures and distribution versions are configurable in the script itself.
 * automatically check for new versions of distributions (RSS feeds?)
 * support downloading via bittorrent/transmission-cli
 * centos: do not hardcode mirror, let centos.org take us to the closest download
-* add support for Debian Live
 * add support for [Arch Linux](https://www.archlinux.org/)
 * add support for [GuixSD](https://www.gnu.org/software/guix/)
 * add support for [NixOS Linux](https://nixos.org/)
