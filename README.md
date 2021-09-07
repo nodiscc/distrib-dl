@@ -54,24 +54,23 @@ Architectures and distribution versions are configurable in the script itself.
 
 ## TODO
 
-* add support for bittorrent downloads (transmission-cli?)
-* automatically check for new versions of distributions (RSS feeds?)
-* support downloading via bittorrent/transmission-cli
-* centos: do not hardcode mirror, let centos.org take us to the closest download
-* add support for [Arch Linux](https://www.archlinux.org/)
-* add support for [GuixSD](https://www.gnu.org/software/guix/)
-* add support for [NixOS Linux](https://nixos.org/)
-* add support for [Ubuntu](https://www.ubuntu.com/)
-* add support for [OpenBSD](https://www.openbsd.org/)
-* add support for [Lakka](https://www.lakka.tv/)
-* add support for [Sparky Linux](https://sparkylinux.org/)
-* add support for [Bedrock Linux](https://bedrocklinux.org/)
 * add GPG/checksum verifications for proxmox
+* add support for [Arch Linux](https://en.wikipedia.org/wiki/Arch_Linux)
+* add support for [Bedrock Linux](https://bedrocklinux.org/)
+* add support for [Clonezilla](https://en.wikipedia.org/wiki/Clonezilla)
+* add support for [GNU Guix System](https://en.wikipedia.org/wiki/GNU_Guix_System)
+* add support for [Lakka](https://www.lakka.tv/)
+* add support for [NixOS](https://en.wikipedia.org/wiki/NixOS)
+* add support for [OpenBSD](https://en.wikipedia.org/wiki/OpenBSD)
+* add support for [Rocky Linux](https://en.wikipedia.org/wiki/Rocky_Linux)
+* add support for [Sparky Linux](https://en.wikipedia.org/wiki/SparkyLinux)
+* add support for [Ubuntu](https://en.wikipedia.org/wiki/Ubuntu)
+* add support for bittorrent downloads (transmission-cli?)
 * add support for windows 10
-* Integrate with https://github.com/thias/glim
-* add support for debian netinstall to glim
-* add support for tails and centos in main glim grub configuration
-* add support for debian live including non-free firmware https://cdimage.debian.org/images/unofficial/non-free/images-including-firmware/current-live/
+* automatically check for new versions of distributions (RSS feeds?)
+* centos: do not hardcode mirror, let centos.org take us to the closest download
+* integrate with https://github.com/ventoy/Ventoy/
+* support downloading via bittorrent/transmission-cli
 
 ## License
 
