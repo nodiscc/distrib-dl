@@ -29,7 +29,7 @@ centos_version_major="8"
 centos_version_minor=".2.2004"
 ### PROXMOX
 # https://www.proxmox.com/en/downloads/category/iso-images-pve
-proxmox_version="7.0-1"
+proxmox_version="7.0-2"
 ### PFSENSE
 pfsense_version="2.5.0"
 pfsense_installer_type="vga" #serial or vga
