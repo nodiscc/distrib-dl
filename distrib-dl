@@ -40,7 +40,7 @@ androidx86_version="9.0-r2"
 ### DEBIAN-LIVE-CONFIG
 # https://gitlab.com/nodiscc/debian-live-config
 # https://github.com/nodiscc/debian-live-config/releases/
-debian_live_config_version="2.2.3"
+debian_live_config_version="3.0.0"
 ### FEDORA WORKSTATION
 fedora_version_major="33"
 fedora_version_minor="1.2"
@@ -275,7 +275,7 @@ function download_androidx86() {
 function download_debian_live_config() {
     # https://gitlab.com/nodiscc/debian-live-config
     debian_live_config_base_url="https://github.com/nodiscc/debian-live-config/releases/download/$debian_live_config_version/"
-    debian_live_config_iso_filename="dlc-${debian_live_config_version}-debian-buster-amd64.hybrid.iso"
+    debian_live_config_iso_filename="dlc-${debian_live_config_version}-debian-bullseye-amd64.hybrid.iso"
     debian_live_config_key_url="${debian_live_config_base_url}/dlc-release.key"
     debian_live_config_sums_url="${debian_live_config_base_url}/SHA512SUMS"
     debian_live_config_sums_sign_url="${debian_live_config_base_url}/SHA512SUMS.sign"
