@@ -55,6 +55,7 @@ usage="$0 [OPTIONS] DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...] [all]
 Available distributions: debian debian-live centos tails kali proxmox pfsense freebsd androidx86 debian-live-config fedora
 Options:
 -c        only check that the url returns 200, don't download anything
+-d DIR    specify base download directory (by default the current working directory is used)
 -h        show help"
 
 ############################
@@ -335,9 +336,10 @@ function download_fedora() {
 function _main() {
     wget_opts=""
     verify="true"
-    while getopts ":ch" opt; do
+    while getopts ":cd:h" opt; do
         case $opt in
             c) wget_opts="--spider"; verify="false"; shift;;
+            d) download_dir="$OPTARG"; shift;;
             h) echo "Usage: $usage"; exit 0;;
             \?) echo "[distrib-dl] ERROR: invalid option -$OPTARG" >&2; echo "Usage: $usage"; exit 1;;
         esac

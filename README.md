@@ -21,6 +21,7 @@ Usage: ./distrib-dl [OPTIONS] DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...] [a
 Available distributions: debian centos tails kali proxmox pfsense freebsd androidx86 debian-live-config fedora
 Options:
 -c        only check that the url returns 200, don't download anything
+-d DIR    specify base download directory (by default the current working directory is used)
 -h        show help
 ```
 
