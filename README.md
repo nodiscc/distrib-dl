@@ -35,12 +35,15 @@ Options:
 * [debian-live-config](https://debian-live-config.readthedocs.io/)
 * [Fedora Workstation](https://getfedora.org/en/workstation/)
 
-Downloads will be verified against checksums and GPG keys when available. Checksums/signatures are downloaded as part of the process, they are recorded in the repository for archival/reference purposes. The script will return warnings unless you manually import and trust gpg keys:
+Downloads will be verified against checksums and GPG keys when available. Checksums/signatures are downloaded as part of the process. The script will return warnings unless you manually import and trust gpg keys:
 
 ```
 gpg: WARNING: This key is not certified with a trusted signature!
 gpg:          There is no indication that the signature belongs to the owner.
 ```
+
+Consider a periodic cleanup of old/obsolete images from your download directory, else disk usage will increase over time (unless you intend to keep old distribution releases?)
+
 
 ## Configuration
 
