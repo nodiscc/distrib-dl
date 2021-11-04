@@ -34,7 +34,7 @@ proxmox_version="7.0-2"
 pfsense_version="2.5.0"
 pfsense_installer_type="vga" #serial or vga
 ### FREEBSD
-freebsd_version="12.0"
+freebsd_version="13.0"
 ### ANDROID X86
 androidx86_version="9.0-r2"
 ### DEBIAN-LIVE-CONFIG
@@ -242,18 +242,14 @@ function download_pfsense {
 function download_freebsd() {
     freebsd_base_url="https://download.freebsd.org/ftp/releases/amd64/amd64/ISO-IMAGES/${freebsd_version}"
     freebsd_iso_filename="FreeBSD-${freebsd_version}-RELEASE-amd64-memstick.img"
-    freebsd_sums_filename="CHECKSUM.SHA512-FreeBSD-${freebsd_version}-RELEASE-amd64.asc"
-    freebsd_sums_url="https://www.freebsd.org/releases/${freebsd_version}R/${freebsd_sums_filename}"
-    freebsd_gpgkeyring_url="https://www.freebsd.org/doc/pgpkeyring.txt"
+    freebsd_sums_filename="CHECKSUM.SHA512-FreeBSD-${freebsd_version}-RELEASE-amd64"
+    freebsd_gpgkeyring_url="https://docs.freebsd.org/pgpkeys/pgpkeys.txt"
     if [[ ! -d "$download_dir/freebsd/" ]]; then mkdir -p "$download_dir/freebsd/"; fi
     echo "[distrib-dl] INFO: Downloading freebsd keyring, checksums and signature..."
     # shellcheck disable=SC2086
     wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/freebsd/" "$freebsd_gpgkeyring_url"
     # shellcheck disable=SC2086
-    wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/freebsd/" "$freebsd_sums_url"
-    if [[ "$verify" == "true" ]]; then
-        gpg --verify "freebsd/$freebsd_sums_filename"
-    fi
+    wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/freebsd/" "$freebsd_base_url/$freebsd_sums_filename"
     echo "[distrib-dl] INFO: Downloading freebsd ISO image..."
     # shellcheck disable=SC2086
     wget $wget_opts --continue --timestamping --show-progress --directory-prefix="$download_dir/freebsd/" "$freebsd_base_url/$freebsd_iso_filename"
