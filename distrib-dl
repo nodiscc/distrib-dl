@@ -330,7 +330,7 @@ function download_fedora() {
 }
 
 function _main() {
-    wget_opts=""
+    wget_opts="--no-verbose"
     verify="true"
     while getopts ":cd:h" opt; do
         case $opt in
