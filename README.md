@@ -69,6 +69,10 @@ Architectures and distribution versions are configurable in the script itself.
 * add support for [Rocky Linux](https://en.wikipedia.org/wiki/Rocky_Linux)
 * add support for [Sparky Linux](https://en.wikipedia.org/wiki/SparkyLinux)
 * add support for [Ubuntu](https://en.wikipedia.org/wiki/Ubuntu)
+* add support for slackware
+* add support for opensuse
+* add support for void linux
+* add support for nixos
 * add support for bittorrent downloads (transmission-cli?)
 * add support for windows 10
 * automatically check for new versions of distributions (RSS feeds?)
