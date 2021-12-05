@@ -43,7 +43,13 @@ gpg: WARNING: This key is not certified with a trusted signature!
 gpg:          There is no indication that the signature belongs to the owner.
 ```
 
-Consider a periodic cleanup of old/obsolete images from your download directory, else disk usage will increase over time (unless you intend to keep old distribution releases?)
+**Debian:** You need to [import Debian signing keys to your GPG keyring](https://keyring.debian.org/):
+
+```bash
+gpg --keyserver keyring.debian.org --recv-keys DF9B9C49EAA9298432589D76DA87E80D6294BE9B
+```
+
+Consider a periodic cleanup of old/obsolete images from your download directory, else disk usage will keep increasing over time (unless you intend to keep old distribution releases?).
 
 
 ## Configuration
