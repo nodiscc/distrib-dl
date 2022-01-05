@@ -35,7 +35,7 @@ Options:
 * [Android x86](https://www.android-x86.org/)
 * [debian-live-config](https://debian-live-config.readthedocs.io/)
 * [Fedora Workstation](https://getfedora.org/en/workstation/)
-* [Ubuntu](https://en.wikipedia.org/wiki/Ubuntu)
+* [Ubuntu](https://ubuntu.com/)
 
 Downloads will be verified against checksums and GPG keys when available. Checksums/signatures are downloaded as part of the process. The script will return warnings unless you manually import and trust gpg keys:
 
