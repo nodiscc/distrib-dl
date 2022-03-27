@@ -12,7 +12,7 @@ set -o pipefail
 ### DEBIAN
 # one of: amd64 armel armhf i386 ia64 kfreebsd-amd64 kfreebsd-i386 mips mipsel multi-arch powerpc s390 s390x source sparc
 debian_architecture="amd64"
-debian_version="11.2.0"
+debian_version="11.3.0"
 # one of: amd64, i386
 debian_live_architecture="amd64"
 # one of: cinnamon gnome kde lxde lxqt mate xfce
