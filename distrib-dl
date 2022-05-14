@@ -46,7 +46,7 @@ fedora_version_major="33"
 fedora_version_minor="1.2"
 ### UBUNTU DESKTOP
 ubuntu_architecture="amd64"
-ubuntu_version="jammy"
+ubuntu_version="kinetic"
 
 ############################
 
