@@ -40,7 +40,7 @@ androidx86_version="9.0-r2"
 ### DEBIAN-LIVE-CONFIG
 # https://gitlab.com/nodiscc/debian-live-config
 # https://github.com/nodiscc/debian-live-config/releases/
-debian_live_config_version="3.0.0"
+debian_live_config_version="3.0.1"
 ### FEDORA WORKSTATION
 fedora_version_major="33"
 fedora_version_minor="1.2"
