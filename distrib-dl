@@ -22,7 +22,7 @@ tails_architecture="amd64"
 tails_version="5.4"
 ### KALI
 kali_architecture="amd64"
-kali_version="2021.2"
+kali_version="2022.3"
 kali_flavour="live" # live/installer
 ### CENTOS
 centos_version_major="8"
