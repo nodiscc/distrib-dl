@@ -200,7 +200,7 @@ function download_kali() {
     wget $wget_opts --continue --timestamping --show-progress --directory-prefix="$download_dir/kali/" "$kali_base_url/$kali_iso_filename"
     if [[ "$verify" == "true" ]]; then
         echo "[distrib-dl] INFO: Verifying Kali ISO image integrity..."
-        (cd "$download_dir/kali/" && sha256sum -c <(grep "$kali_iso_filename" SHA256SUMS))
+        (cd "$download_dir/kali/" && sha256sum --check --ignore-missing <(grep "$kali_iso_filename" SHA256SUMS))
     fi
 }
 
