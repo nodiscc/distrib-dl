@@ -46,7 +46,7 @@ fedora_version_major="33"
 fedora_version_minor="1.2"
 ### UBUNTU DESKTOP
 ubuntu_architecture="amd64"
-ubuntu_version="kinetic"
+ubuntu_version="22.04.1"
 
 ############################
 
@@ -333,8 +333,8 @@ function download_fedora() {
 }
 
 function download_ubuntu() {
-    ubuntu_base_url="https://cdimage.ubuntu.com/daily-live/current"
-    ubuntu_iso_filename="${ubuntu_version}-desktop-${ubuntu_architecture}.iso"
+    ubuntu_base_url="https://releases.ubuntu.com/${ubuntu_version}"
+    ubuntu_iso_filename="ubuntu-${ubuntu_version}-desktop-${ubuntu_architecture}.iso"
     ubuntu_sums_url="${ubuntu_base_url}/SHA256SUMS"
     ubuntu_sums_sign_url="${ubuntu_base_url}/SHA256SUMS.gpg"
     if [[ ! -d "$download_dir/ubuntu/" ]]; then mkdir -p "$download_dir/ubuntu/"; fi
