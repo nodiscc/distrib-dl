@@ -26,7 +26,7 @@ kali_version="2022.3"
 kali_flavour="live" # live/installer
 ### CENTOS
 centos_version_major="8"
-centos_version_minor=".2.2004"
+centos_version_minor=".5.2111"
 ### PROXMOX
 # https://www.proxmox.com/en/downloads/category/iso-images-pve
 proxmox_version="7.3-1"
