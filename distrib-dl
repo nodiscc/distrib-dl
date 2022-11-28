@@ -216,13 +216,12 @@ function download_proxmox {
 }
 
 function download_pfsense {
-    # TODO add other architectures (currently only amd64 supported)
     # New York mirror (disabled)
     #pfsense_base_url="https://nyifiles.pfsense.org/mirror/downloads"
-    # Frankfurt mirror (disabled)
-    #pfsense_base_url="https://frafiles.pfsense.org/mirror/downloads"
-    # Main site
-    pfsense_base_url="https://files.pfsense.org/mirror/downloads"
+    # Main site (disabled, does not redirect properly)
+    #pfsense_base_url="https://files.pfsense.org/mirror/downloads"
+    # Frankfurt mirror
+    pfsense_base_url="https://frafiles.pfsense.org/mirror/downloads"
     if [[ "$pfsense_installer_type" == "serial" ]]; then pfsense_is_serial="serial-"
         elif [[ "$pfsense_installer_type" == "vga" ]]; then pfsense_is_serial=""
         else echo "[distrib-dl] ERROR: invalid installer type for pfsense: $pfsense_installer_type"; exit 1
