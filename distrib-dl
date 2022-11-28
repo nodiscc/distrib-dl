@@ -31,7 +31,7 @@ centos_version_minor=".2.2004"
 # https://www.proxmox.com/en/downloads/category/iso-images-pve
 proxmox_version="7.3-1"
 ### PFSENSE
-pfsense_version="2.5.0"
+pfsense_version="2.6.0"
 pfsense_installer_type="vga" #serial or vga
 ### FREEBSD
 freebsd_version="13.0"
