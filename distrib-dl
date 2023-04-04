@@ -24,9 +24,6 @@ tails_version="5.11"
 kali_architecture="amd64"
 kali_version="2022.3"
 kali_flavour="live" # live/installer
-### CENTOS
-centos_version_major="8"
-centos_version_minor=".5.2111"
 ### PROXMOX
 # https://www.proxmox.com/en/downloads/category/iso-images-pve
 proxmox_version="7.4-1"
@@ -55,7 +52,7 @@ set -o errexit
 
 download_dir="$PWD"
 usage="$0 [OPTIONS] DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...] [all]
-Available distributions: debian debian-live centos tails kali proxmox pfsense freebsd androidx86 debian-live-config fedora ubuntu
+Available distributions: debian debian-live tails kali proxmox pfsense freebsd androidx86 debian-live-config fedora ubuntu
 Options:
 -c        only check that the url returns 200, don't download anything
 -d DIR    specify base download directory (by default the current working directory is used)
@@ -116,38 +113,6 @@ function download_debian_live() {
     if [[ "$verify" == "true" ]]; then
         echo "Verifying Debian Live ISO image integrity..."
         (cd "$download_dir/debian-live/" && sha512sum --ignore-missing -c <(cat SHA512SUMS))
-    fi
-}
-
-function download_centos() {
-    # fingerprint: 6341 AB27 53D7 8A78 A7C2  7BB1 24C6 A8A7 F4A8 0EB5
-    centos_base_url="https://ftp.osuosl.org/pub/centos/${centos_version_major}/isos/x86_64/"
-    centos_iso_filename="CentOS-${centos_version_major}${centos_version_minor}-x86_64-boot.iso"
-    centos_iso_url="${centos_base_url}/${centos_iso_filename}"
-    #centos_iso_url="${centos_base_url}/CentOS-7-live-GNOME-x86_64.iso" #Alternative live image w/ GNOME desktop, disabled
-    centos_key_url="https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official"
-    centos_sums_sign_url="${centos_base_url}/CHECKSUM.asc"
-    centos_sums_url="${centos_base_url}/CHECKSUM"
-    if [[ ! -d "$download_dir/centos/" ]]; then mkdir -p "$download_dir/centos/"; fi
-    echo "[distrib-dl] INFO: Downloading CentOS keys, checksums and signature..."
-    # shellcheck disable=SC2086
-    wget $wget_opts --continue --timestamping --show-progress --directory-prefix="$download_dir/centos/" "$centos_key_url"
-    # shellcheck disable=SC2086
-    wget $wget_opts --continue --timestamping --show-progress --directory-prefix="$download_dir/centos/" "$centos_sums_url"
-    # shellcheck disable=SC2086
-    wget $wget_opts --continue --timestamping --show-progress --directory-prefix="$download_dir/centos/" "$centos_sums_sign_url"
-    if [[ "$verify" == "true" ]]; then
-        echo "[distrib-dl] INFO: Importing CentOS GPG key..."
-        gpg --import "$download_dir/centos/RPM-GPG-KEY-CentOS-Official"
-    fi
-    echo "[distrib-dl] INFO: Downloading CentOS ISO image..."
-    # shellcheck disable=SC2086
-    wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/centos/" "$centos_iso_url"
-    if [[ "$verify" == "true" ]]; then
-        echo "[distrib-dl] INFO: Verifying CentOS signature..."
-        (cd "$download_dir/centos/" &&  gpg --verify < CHECKSUM.asc)
-        echo "[distrib-dl] INFO: Verifying CentOS ISO image integrity..."
-        (cd "$download_dir/centos" && sha256sum --ignore-missing -c CHECKSUM)
     fi
 }
 
@@ -371,7 +336,6 @@ function _main() {
     for distribution in "$@"; do
         if [[ "$distribution" == "debian" ]] ; then download_debian; fi
         if [[ "$distribution" == "debian-live" ]] ; then download_debian_live; fi
-        if [[ "$distribution" == "centos" ]] ; then download_centos; fi
         if [[ "$distribution" == "tails" ]] ; then download_tails; fi
         if [[ "$distribution" == "kali" ]] ; then download_kali; fi
         if [[ "$distribution" == "proxmox" ]] ; then download_proxmox; fi
@@ -381,7 +345,7 @@ function _main() {
         if [[ "$distribution" == "debian-live-config" ]] ; then download_debian_live_config; fi
         if [[ "$distribution" == "fedora" ]] ; then download_fedora; fi
         if [[ "$distribution" == "ubuntu" ]] ; then download_ubuntu; fi
-        if [[ "$distribution" == "all" ]] ; then download_debian && download_debian_live && download_centos && download_tails && download_kali && download_proxmox && download_pfsense && download_freebsd && download_androidx86 && download_debian_live_config && download_fedora && download_ubuntu; fi
+        if [[ "$distribution" == "all" ]] ; then download_debian && download_debian_live && download_tails && download_kali && download_proxmox && download_pfsense && download_freebsd && download_androidx86 && download_debian_live_config && download_fedora && download_ubuntu; fi
     done
 }
 

@@ -18,7 +18,7 @@ Download and keep up-to-date Linux/BSD distribution ISO images (installers/live 
 
 ```
 Usage: ./distrib-dl [OPTIONS] DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...] [all]
-Available distributions: debian debian-live centos tails kali proxmox pfsense freebsd androidx86 debian-live-config fedora ubuntu
+Available distributions: debian debian-live tails kali proxmox pfsense freebsd androidx86 debian-live-config fedora ubuntu
 Options:
 -c        only check that the url returns 200, don't download anything
 -d DIR    specify base download directory (by default the current working directory is used)
@@ -26,7 +26,6 @@ Options:
 ```
 
 * [Debian GNU/Linux](https://www.debian.org/) (_[netinstall](https://www.debian.org/distrib/netinst)_ and _[live](https://www.debian.org/CD/live/)_)
-* [CentOS](https://www.centos.org/)
 * [Tails](https://tails.boum.org/)
 * [Kali](https://www.kali.org/)
 * [Proxmox VE](https://pve.proxmox.com/wiki/Main_Page)
@@ -73,7 +72,8 @@ Architectures and distribution versions are configurable in the script itself.
 * add support for [Lakka](https://www.lakka.tv/)
 * add support for [NixOS](https://en.wikipedia.org/wiki/NixOS)
 * add support for [OpenBSD](https://en.wikipedia.org/wiki/OpenBSD)
-* drop support for CentOS, add support for [Rocky Linux](https://en.wikipedia.org/wiki/Rocky_Linux) or [AlmaLinux](https://en.wikipedia.org/wiki/AlmaLinux)
+* add support for [Rocky Linux](https://en.wikipedia.org/wiki/Rocky_Linux)
+* add support for [AlmaLinux](https://en.wikipedia.org/wiki/AlmaLinux)
 * add support for [Sparky Linux](https://en.wikipedia.org/wiki/SparkyLinux)
 * add support for slackware
 * add support for opensuse
@@ -82,7 +82,6 @@ Architectures and distribution versions are configurable in the script itself.
 * add support for bittorrent downloads (transmission-cli?)
 * add support for windows 10
 * automatically check for new versions of distributions (RSS feeds?)
-* centos: do not hardcode mirror, let centos.org take us to the closest download
 * integrate with https://github.com/ventoy/Ventoy/
 * support downloading via bittorrent/transmission-cli
 
