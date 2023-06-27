@@ -26,7 +26,7 @@ kali_version="2022.3"
 kali_flavour="live" # live/installer
 ### PROXMOX
 # https://www.proxmox.com/en/downloads/category/iso-images-pve
-proxmox_version="7.4-1"
+proxmox_version="8.0-2"
 ### PFSENSE
 pfsense_version="2.6.0"
 pfsense_installer_type="vga" #serial or vga
