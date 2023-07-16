@@ -18,7 +18,7 @@ Download and keep up-to-date Linux/BSD distribution ISO images (installers/live 
 
 ```
 Usage: ./distrib-dl [OPTIONS] DISTRIBUTION1 [DISTRIBUTION2 DISTRIBUTION3 ...] [all]
-Available distributions: debian debian-live tails kali proxmox pfsense freebsd androidx86 debian-live-config fedora ubuntu
+Available distributions: debian debian-live tails kali proxmox pfsense freebsd debian-live-config fedora ubuntu
 Options:
 -c        only check that the url returns 200, don't download anything
 -d DIR    specify base download directory (by default the current working directory is used)
@@ -31,7 +31,6 @@ Options:
 * [Proxmox VE](https://pve.proxmox.com/wiki/Main_Page)
 * [pfSense](https://www.pfsense.org/download/)
 * [FreeBSD](https://www.freebsd.org/)
-* [Android x86](https://www.android-x86.org/)
 * [debian-live-config](https://debian-live-config.readthedocs.io/)
 * [Fedora Workstation](https://getfedora.org/en/workstation/)
 * [Ubuntu](https://ubuntu.com/)
