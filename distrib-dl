@@ -31,7 +31,7 @@ proxmox_version="8.0-2"
 pfsense_version="2.6.0"
 pfsense_installer_type="vga" #serial or vga
 ### FREEBSD
-freebsd_version="13.0"
+freebsd_version="13.2"
 ### ANDROID X86
 androidx86_version="9.0-r2"
 ### DEBIAN-LIVE-CONFIG
