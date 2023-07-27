@@ -25,7 +25,7 @@ kali_architecture="amd64"
 kali_version="2023.2"
 kali_flavour="live" # live/installer
 ### PROXMOX
-# https://www.proxmox.com/en/downloads/category/iso-images-pve
+# https://www.proxmox.com/en/downloads/proxmox-virtual-environment/iso
 proxmox_version="8.0-2"
 ### PFSENSE
 pfsense_version="2.6.0"
@@ -160,12 +160,10 @@ function download_kali() {
 }
 
 function download_proxmox {
-    # No list of available ISOs https://forum.proxmox.com/threads/wget-pmg-iso.42113/
-    # https://www.proxmox.com/en/downloads/category/iso-images-pve
     # https://pve.proxmox.com/wiki/Roadmap
     # TODO checksums/gpg verify download
     if [[ ! -d "$download_dir/kali/" ]]; then mkdir -p "$download_dir/kali/"; fi
-    proxmox_base_url="https://www.proxmox.com/images/download/pve/iso/"
+    proxmox_base_url="https://enterprise.proxmox.com/iso"
     # shellcheck disable=SC2086
     wget $wget_opts --continue --timestamping --show-progress --directory-prefix="$download_dir/proxmox/" "$proxmox_base_url/proxmox-ve_$proxmox_version.iso"
 }
