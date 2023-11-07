@@ -37,8 +37,8 @@ freebsd_version="13.2"
 # https://github.com/nodiscc/debian-live-config/releases/
 debian_live_config_version="4.0.0"
 ### FEDORA WORKSTATION
-fedora_version_major="33"
-fedora_version_minor="1.2"
+fedora_version_major="39"
+fedora_version_minor="1.5"
 ### UBUNTU DESKTOP
 ubuntu_architecture="amd64"
 ubuntu_version="22.04.1"
@@ -250,7 +250,7 @@ function download_fedora() {
     fedora_iso_filename="Fedora-Workstation-Live-x86_64-${fedora_version_full}.iso"
     fedora_iso_url="https://download.fedoraproject.org/pub/fedora/linux/releases/${fedora_version_major}/Workstation/x86_64/iso/${fedora_iso_filename}"
     fedora_sums_filename="Fedora-Workstation-${fedora_version_major}-${fedora_version_minor}-x86_64-CHECKSUM"
-    fedora_sums_url="https://getfedora.org/static/checksums/${fedora_sums_filename}"
+    fedora_sums_url="https://download.fedoraproject.org/pub/fedora/linux/releases/${fedora_version_major}/Workstation/x86_64/iso/${fedora_sums_filename}"
     fedora_key_filename="fedora.gpg"
     fedora_key_url="https://getfedora.org/static/${fedora_key_filename}"
     if [[ ! -d "$download_dir/fedora/" ]]; then mkdir -p "$download_dir/fedora/"; fi
