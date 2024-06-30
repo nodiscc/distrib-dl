@@ -92,3 +92,7 @@ Architectures and distribution versions are configurable in the script itself.
 
 - https://stdout.root.sx/gitea/nodiscc/distrib-dl
 - https://gitlab.com/nodiscc/distrib-dl
+
+## Alternatives
+
+- [quickget](https://github.com/quickemu-project/quickemu/blob/master/quickget) from the [quickemu](https://github.com/quickemu-project/quickemu) project. No focus on checking signatures but for distros which don’t provide signatures anyway, it is worth a look.
