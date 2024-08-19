@@ -34,6 +34,7 @@ Options:
 * [debian-live-config](https://debian-live-config.readthedocs.io/)
 * [Fedora Workstation](https://getfedora.org/en/workstation/)
 * [Ubuntu](https://ubuntu.com/)
+* [Arch Linux](https://archlinux.org/)
 
 Downloads will be verified against checksums and GPG keys when available. Checksums/signatures are downloaded as part of the process. The script will return warnings unless you manually import and trust gpg keys:
 
@@ -64,7 +65,6 @@ Architectures and distribution versions are configurable in the script itself.
 ## TODO
 
 * add GPG/checksum verifications for proxmox
-* add support for [Arch Linux](https://en.wikipedia.org/wiki/Arch_Linux)
 * add support for [Bedrock Linux](https://bedrocklinux.org/)
 * add support for [Clonezilla](https://en.wikipedia.org/wiki/Clonezilla)
 * add support for [GNU Guix System](https://en.wikipedia.org/wiki/GNU_Guix_System)
