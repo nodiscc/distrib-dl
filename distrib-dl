@@ -41,7 +41,7 @@ fedora_version_major="39"
 fedora_version_minor="1.5"
 ### UBUNTU DESKTOP
 ubuntu_architecture="amd64"
-ubuntu_version="22.04.1"
+ubuntu_version="22.04.5"
 ### ARCHLINUX
 archlinux_version="2024.09.01"
 
