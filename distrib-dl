@@ -110,7 +110,7 @@ function download_debian_live() {
 
 function download_tails() {
     if [[ ! -d "$download_dir/tails/" ]]; then mkdir -p "$download_dir/tails/"; fi
-    tails_iso_url="https://dl.amnesia.boum.org/tails/stable/tails-${tails_architecture}-${tails_version}/tails-${tails_architecture}-${tails_version}.iso"
+    tails_iso_url="https://mirrors.wikimedia.org/tails/stable/tails-${tails_architecture}-${tails_version}/tails-${tails_architecture}-${tails_version}.iso"
     tails_key_url="https://tails.boum.org/tails-signing.key"
     tails_sig_url="https://tails.boum.org/torrents/files/tails-${tails_architecture}-${tails_version}.iso.sig"
     echo "[distrib-dl] INFO: downloading Tails key and signature..."
@@ -123,9 +123,8 @@ function download_tails() {
         gpg --import "$download_dir/tails/tails-signing.key"
     fi
     echo "[distrib-dl] INFO: downloading Tails ISO image"
-    #Force HTTPS but ignore certificate checks since Tails CDN can point to other servers than dl.amnesia.boum.org
     # shellcheck disable=SC2086
-    wget $wget_opts --continue --no-check-certificate --timestamping --show-progress --directory-prefix="$download_dir/tails/" "$tails_iso_url"
+    wget $wget_opts --continue --timestamping --show-progress --directory-prefix="$download_dir/tails/" "$tails_iso_url"
     if [[ "$verify" == "true" ]]; then
         echo "[distrib-dl] INFO: verifying Tails signature..."
         tails_sig_filename="tails-${tails_architecture}-${tails_version}.iso.sig"
