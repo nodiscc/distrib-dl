@@ -304,7 +304,7 @@ function download_archlinux() {
     archlinux_base_url="https://geo.mirror.pkgbuild.com/iso/${archlinux_version}/"
     archlinux_iso_filename="archlinux-x86_64.iso"
     archlinux_sums_url="https://archlinux.org/iso/${archlinux_version}/sha256sums.txt"
-    archlinux_sums_sign_url="https://geo.mirror.pkgbuild.com/iso/2024.08.01/archlinux-x86_64.iso.sig"
+    archlinux_sums_sign_url="https://geo.mirror.pkgbuild.com/iso/${archlinux_version}/archlinux-x86_64.iso.sig"
     if [[ ! -d "$download_dir/archlinux/" ]]; then mkdir -p "$download_dir/archlinux/"; fi
     echo "[distrib-dl] Downloading Arch Linux checksums and signature..."
     # shellcheck disable=SC2086
