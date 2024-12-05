@@ -43,7 +43,7 @@ fedora_version_minor="1.5"
 ubuntu_architecture="amd64"
 ubuntu_version="22.04.5"
 ### ARCHLINUX
-archlinux_version="2024.11.01"
+archlinux_version="2024.12.01"
 
 ############################
 
