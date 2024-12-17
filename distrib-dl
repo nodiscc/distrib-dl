@@ -35,7 +35,7 @@ freebsd_version="13.2"
 ### DEBIAN-LIVE-CONFIG
 # https://gitlab.com/nodiscc/debian-live-config
 # https://github.com/nodiscc/debian-live-config/releases/
-debian_live_config_version="4.1.0"
+debian_live_config_version="4.2.0"
 ### FEDORA WORKSTATION
 fedora_version_major="39"
 fedora_version_minor="1.5"
