@@ -19,7 +19,7 @@ debian_live_architecture="amd64"
 debian_live_desktop_environment="xfce"
 ### TAILS
 tails_architecture="amd64"
-tails_version="6.19"
+tails_version="7.1"
 ### KALI
 kali_architecture="amd64"
 kali_version="2024.4"
