@@ -2,7 +2,7 @@
 
 Download and keep up-to-date Linux/BSD distribution ISO images (installers/live images). Can be used to maintain a local ISO image repository.
 
-[![pipeline status](https://gitlab.com/nodiscc/distrib-dl/badges/master/pipeline.svg)](https://gitlab.com/nodiscc/distrib-dl/commits/master)
+[![](https://github.com/nodiscc/distrib-dl/actions/workflows/ci.yml/badge.svg)](https://github.com/nodiscc/distrib-dl/commits/master)
 
 ## Installation
 

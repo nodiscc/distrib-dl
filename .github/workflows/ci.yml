@@ -1,0 +1,23 @@
+name: ci
+on:
+  push:
+  workflow_dispatch:
+
+env:
+  LANG: "C.UTF-8"
+  LC_ALL: "C.UTF-8"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v2
+      - name: install test dependencies
+        run: sudo apt-get update -qy && sudo apt-get install -y shellcheck cloc
+      - name: run cloc
+        run: cloc --vcs git .
+      - name: run shellcheck
+        run: shellcheck distrib-dl
+      - name: run distrib-dl in check mode
+        run: ./distrib-dl -c all
