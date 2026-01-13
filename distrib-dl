@@ -80,7 +80,7 @@ def download_and_verify(dir, base_url, iso, sums, sig, key_url, key_filename, ve
         elif "SHA256" in sums or "sha256" in sums.lower():
             algo = "sha256"
         else:
-            algo = "sha" + sums.split("SUMS")[0].replace("SHA", "")
+            algo = "sha256"
         cmd = f"cat '{os.path.join(dir, sums)}' | (cd '{dir}' && {algo}sum --check --ignore-missing)"
         run_cmd(cmd)
 
