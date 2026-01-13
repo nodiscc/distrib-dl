@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
+"""Download and verify Linux distribution installers"""
+
 import os
 import sys
 import subprocess
 import argparse
-import hashlib
-import requests
 
 # Configuration
 config = {
@@ -28,9 +28,9 @@ config = {
 }
 
 # Global options
-verify = True
-download_dir = os.getcwd()
-wget_opts = "--progress=dot:giga --no-verbose --timestamping"
+VERIFY = True
+DOWNLOAD_DIR = os.getcwd()
+WGET_OPTS = "--progress=dot:giga --no-verbose --timestamping"
 
 def run_cmd(cmd):
     """Run shell command with real-time output, and handle errors."""
@@ -52,12 +52,12 @@ def run_cmd(cmd):
 def download_file(url, dest_dir):
     """Download a file using wget."""
     print(f'[distrib-dl] downloading {url}')
-    cmd = f"wget {wget_opts} --directory-prefix='{dest_dir}/' '{url}'"
+    cmd = f"wget {WGET_OPTS} --directory-prefix='{dest_dir}/' '{url}'"
     run_cmd(cmd)
 
-def download_and_verify(dir, base_url, iso, sums, sig, key_url, key_filename, verify_flag):
+def download_and_verify(dest_dir, base_url, iso, sums, sig, key_url, key_filename, verify_flag):
     """Generic download and verification function."""
-    os.makedirs(dir, exist_ok=True)
+    os.makedirs(dest_dir, exist_ok=True)
     if sums:
         download_file(f"{base_url}/{sums}", dir)
     if sig:
@@ -71,29 +71,29 @@ def download_and_verify(dir, base_url, iso, sums, sig, key_url, key_filename, ve
     download_file(f"{base_url}/{iso}", dir)
 
     if verify_flag and sig:
-        verify_signature(dir, sig, sums, key_file)
+        verify_signature(dest_dir, sig, sums, key_file)
 
     if verify_flag:
-        print(f"[distrib-dl] Verifying ISO integrity...")
+        print("[distrib-dl] Verifying ISO integrity...")
         if "SHA512" in sums or "sha512" in sums.lower():
             algo = "sha512"
         elif "SHA256" in sums or "sha256" in sums.lower():
             algo = "sha256"
         else:
             algo = "sha256"
-        cmd = f"cat '{os.path.join(dir, sums)}' | (cd '{dir}' && {algo}sum --check --ignore-missing)"
+        cmd = f"cat '{os.path.join(dest_dir, sums)}' | (cd '{dir}' && {algo}sum --check --ignore-missing)"
         run_cmd(cmd)
 
-def verify_signature(dir, sig_file, sums_file, key_file):
+def verify_signature(dest_dir, sig_file, sums_file, key_file):
     """Verify GPG signature."""
     if key_file:
-        cmd = f"gpg --import '{os.path.join(dir, key_file)}'"
+        cmd = f"gpg --import '{os.path.join(dest_dir, key_file)}'"
         run_cmd(cmd)
-    cmd = f"gpg --keyid-format 0xlong --verify '{os.path.join(dir, sig_file)}' '{os.path.join(dir, sums_file)}'"
+    cmd = f"gpg --keyid-format 0xlong --verify '{os.path.join(dest_dir, sig_file)}' '{os.path.join(dest_dir, sums_file)}'"
     run_cmd(cmd)
 
 def download_debian():
-    dir = os.path.join(download_dir, "debian")
+    dest_dir = os.path.join(DOWNLOAD_DIR, "debian")
     base_url = f"https://cdimage.debian.org/debian-cd/current/{config['debian_architecture']}/iso-cd/"
     iso = f"debian-{config['debian_version']}-{config['debian_architecture']}-netinst.iso"
     sums = "SHA512SUMS"
@@ -103,49 +103,48 @@ def download_debian():
     run_cmd(cmd)
 
     download_and_verify(
-        dir=dir,
+        dest_dir=dest_dir,
         base_url=base_url,
         iso=iso,
         sums=sums,
         sig=sig,
         key_url=None,
         key_filename=None,
-        verify_flag=verify
+        verify_flag=VERIFY
     )
 
 def download_debian_live():
-    dir = os.path.join(download_dir, "debian-live")
+    dest_dir = os.path.join(DOWNLOAD_DIR, "debian-live")
     base_url = f"https://cdimage.debian.org/cdimage/release/current-live/{config['debian_live_architecture']}/iso-hybrid/"
     iso = f"debian-live-{config['debian_version']}-{config['debian_live_architecture']}-{config['debian_live_desktop_environment']}.iso"
     sums = "SHA512SUMS"
     sig = "SHA512SUMS.sign"
     download_and_verify(
-        dir=dir,
+        dest_dir=dest_dir,
         base_url=base_url,
         iso=iso,
         sums=sums,
         sig=sig,
         key_url=None,
         key_filename=None,
-        verify_flag=verify
+        verify_flag=VERIFY
     )
 
 def download_tails():
-    dir = os.path.join(download_dir, "tails")
-    os.makedirs(dir, exist_ok=True)
+    dest_dir = os.path.join(DOWNLOAD_DIR, "tails")
+    os.makedirs(dest_dir, exist_ok=True)
     iso_url = f"https://mirrors.wikimedia.org/tails/stable/tails-{config['tails_architecture']}-{config['tails_version']}/tails-{config['tails_architecture']}-{config['tails_version']}.iso"
     key_url = "https://tails.boum.org/tails-signing.key"
     sig_url = f"https://tails.boum.org/torrents/files/tails-{config['tails_architecture']}-{config['tails_version']}.iso.sig"
     download_file(key_url, dir)
     download_file(sig_url, dir)
     download_file(iso_url, dir)
-    if verify:
+    if VERIFY:
         run_cmd(f"gpg --import '{dir}/tails-signing.key'")
-    if verify:
         run_cmd(f"gpg --keyid-format 0xlong --verify '{dir}/tails-{config['tails_architecture']}-{config['tails_version']}.iso.sig' '{dir}/tails-{config['tails_architecture']}-{config['tails_version']}.iso'")
 
 def download_kali():
-    dir = os.path.join(download_dir, "kali")
+    dest_dir = os.path.join(DOWNLOAD_DIR, "kali")
     base_url = f"https://cdimage.kali.org/kali-{config['kali_version']}/"
     iso = f"kali-linux-{config['kali_version']}-{config['kali_flavour']}-{config['kali_architecture']}.iso"
     sums = "SHA256SUMS"
@@ -153,22 +152,22 @@ def download_kali():
     key_url = "https://archive.kali.org/archive-key.asc"
     key_filename = "archive-key.asc"
     download_and_verify(
-        dir=dir,
+        dest_dir=dest_dir,
         base_url=base_url,
         iso=iso,
         sums=sums,
         sig=sig,
         key_url=key_url,
         key_filename=key_filename,
-        verify_flag=verify
+        verify_flag=VERIFY
     )
 
 def download_proxmox():
-    dir = os.path.join(download_dir, "proxmox")
+    dest_dir = os.path.join(DOWNLOAD_DIR, "proxmox")
     base_url = "https://enterprise.proxmox.com/iso"
     iso = f"proxmox-ve_{config['proxmox_version']}.iso"
     download_and_verify(
-        dir=dir,
+        dest_dir=dest_dir,
         base_url=base_url,
         iso=iso,
         sums=None,
@@ -179,31 +178,31 @@ def download_proxmox():
     )
 
 def download_freebsd():
-    dir = os.path.join(download_dir, "freebsd")
+    dest_dir = os.path.join(DOWNLOAD_DIR, "freebsd")
     base_url = f"https://download.freebsd.org/ftp/releases/amd64/amd64/ISO-IMAGES/{config['freebsd_version']}"
     iso_filename = f"FreeBSD-{config['freebsd_version']}-RELEASE-amd64-memstick.img"
     sums_filename = f"CHECKSUM.SHA512-FreeBSD-{config['freebsd_version']}-RELEASE-amd64"
     keyring_url = "https://docs.freebsd.org/pgpkeys/pgpkeys.txt"
     download_and_verify(
-        dir=dir,
+        dest_dir=dest_dir,
         base_url=base_url,
         iso=iso_filename,
         sums=sums_filename,
         sig=None,
         key_url=keyring_url,
         key_filename="pgpkeys.txt",
-        verify_flag=verify
+        verify_flag=VERIFY
     )
 
 def download_debian_live_config():
-    dir = os.path.join(download_dir, "debian-live-config")
+    dest_dir = os.path.join(DOWNLOAD_DIR, "debian-live-config")
     base_url = f"https://github.com/nodiscc/debian-live-config/releases/download/{config['debian_live_config_version']}/"
     iso = f"debian-live-config-{config['debian_live_config_version']}-debian-bookworm-amd64.iso"
     sums = "SHA512SUMS"
     sig = "SHA512SUMS.sign"
     key = f"{base_url}debian-live-config-release.key"
     download_and_verify(
-        dir=dir,
+        dest_dir=dest_dir,
         base_url=base_url,
         iso=iso,
         sums=sums,
@@ -214,24 +213,24 @@ def download_debian_live_config():
     )
 
 def download_fedora():
-    dir = os.path.join(download_dir, "fedora")
+    dest_dir = os.path.join(DOWNLOAD_DIR, "fedora")
     base_url = f"https://download.fedoraproject.org/pub/fedora/linux/releases/{config['fedora_version_major']}/Workstation/x86_64/iso"
     iso = f"Fedora-Workstation-Live-x86_64-{config['fedora_version_major']}-{config['fedora_version_minor']}.iso"
     sums = f"Fedora-Workstation-{config['fedora_version_major']}-{config['fedora_version_minor']}-x86_64-CHECKSUM"
     key = "https://fedoraproject.org/fedora.gpg"
     download_and_verify(
-        dir=dir,
+        dest_dir=dest_dir,
         base_url=base_url,
         iso=iso,
         sums=sums,
         sig=None,
         key_url=key,
         key_filename=None,
-        verify_flag=verify
+        verify_flag=VERIFY
     )
 
 def download_ubuntu():
-    dir = os.path.join(download_dir, "ubuntu")
+    dest_dir = os.path.join(DOWNLOAD_DIR, "ubuntu")
     base_url = f"https://releases.ubuntu.com/{config['ubuntu_version']}"
     iso = f"ubuntu-{config['ubuntu_version']}-desktop-{config['ubuntu_architecture']}.iso"
     sums = "SHA256SUMS"
@@ -241,18 +240,18 @@ def download_ubuntu():
     run_cmd(cmd)
 
     download_and_verify(
-        dir=dir,
+        dest_dir=dest_dir,
         base_url=base_url,
         iso=iso,
         sums=sums,
         sig=sig,
         key_url=None,
         key_filename=None,
-        verify_flag=verify
+        verify_flag=VERIFY
     )
 
 def download_archlinux():
-    dir = os.path.join(download_dir, "archlinux")
+    dest_dir = os.path.join(DOWNLOAD_DIR, "archlinux")
     base_url = f"https://geo.mirror.pkgbuild.com/iso/{config['archlinux_version']}"
     iso_filename = "archlinux-x86_64.iso"
     sums_filename = "sha256sums.txt"
@@ -260,33 +259,35 @@ def download_archlinux():
     sums_url = f"https://archlinux.org/iso/{config['archlinux_version']}/{sums_filename}"
     download_file(sums_url, dir)
 
-    if verify:
+    if VERIFY:
         run_cmd("gpg --auto-key-locate clear,wkd -v --locate-external-key pierre@archlinux.org")
 
     download_and_verify(
-        dir=dir,
+        dest_dir=dest_dir,
         base_url=base_url,
         iso=iso_filename,
         sums=sums_filename,
         sig=sig_filename,
         key_url=None,
         key_filename=None,
-        verify_flag=verify
+        verify_flag=VERIFY
     )
 
 def main():
-    parser = argparse.ArgumentParser(description="Download and verify Linux distribution installers")
+    parser = argparse.ArgumentParser(description="""Download and verify Linux distribution installers""")
     parser.add_argument("-c", action="store_true", help="Only check URL, don't download")
     parser.add_argument("-d", dest="dir", help="Specify base download directory")
-    parser.add_argument("distributions", nargs="*", help="Distributions to download (archlinux debian debian-live debian-live-config fedora freebsd kali proxmox tails ubuntu, or all")
+    parser.add_argument("distributions", nargs="*", help="Distributions to download (archlinux debian debian-live debian-live-config fedora freebsd kali proxmox tails ubuntu, or all)")
     args = parser.parse_args()
 
-    global verify, download_dir, wget_opts
     if args.c:
-        wget_opts = "--spider"
-        verify = False
+        global WGET_OPTS
+        global VERIFY
+        WGET_OPTS = "--spider"
+        VERIFY = False
     if args.dir:
-        download_dir = args.dir
+        global DOWNLOAD_DIR
+        DOWNLOAD_DIR = args.dir
 
     distributions = args.distributions
 
