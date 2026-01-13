@@ -18,8 +18,6 @@ config = {
     "kali_version": "2025.4",
     "kali_flavour": "installer",
     "proxmox_version": "8.4-1",
-    "pfsense_version": "2.7.2",
-    "pfsense_installer_type": "vga",
     "freebsd_version": "13.2",
     "debian_live_config_version": "4.2.0",
     "fedora_version_major": "41",
@@ -132,29 +130,6 @@ def download_proxmox():
     iso = f"proxmox-ve_{config['proxmox_version']}.iso"
     download_and_verify(dir, base_url, iso, "", "", "", False)
 
-def download_pfsense():
-    dir = os.path.join(download_dir, "pfsense")
-    os.makedirs(dir, exist_ok=True)
-    
-    if config["pfsense_installer_type"] == "serial":
-        pfsense_is_serial = "serial-"
-    elif config["pfsense_installer_type"] == "vga":
-        pfsense_is_serial = ""
-    else:
-        print(f"[distrib-dl] ERROR: invalid installer type for pfsense: {config['pfsense_installer_type']}")
-        sys.exit(1)
-    
-    pfsense_iso_filename = f"pfSense-CE-memstick-{pfsense_is_serial}{config['pfsense_version']}-RELEASE-amd64.img.gz"
-    pfsense_hashes_url = f"https://www.pfsense.org/hashes/{pfsense_iso_filename}.sha256"
-    pfsense_base_url = "https://frafiles.pfsense.org/mirror/downloads"
-    
-    download_file(pfsense_hashes_url, dir, f"{pfsense_iso_filename}.sha256")
-    download_file(f"{pfsense_base_url}/{pfsense_iso_filename}", dir, pfsense_iso_filename)
-    
-    if verify:
-        cmd = f"(cd '{dir}' && sha256sum --check '{pfsense_iso_filename}.sha256')"
-        run_cmd(cmd)
-
 def download_freebsd():
     dir = os.path.join(download_dir, "freebsd")
     os.makedirs(dir, exist_ok=True)
@@ -225,7 +200,7 @@ def main():
     parser = argparse.ArgumentParser(description="Download and verify Linux distribution installers")
     parser.add_argument("-c", action="store_true", help="Only check URL, don't download")
     parser.add_argument("-d", dest="dir", help="Specify base download directory")
-    parser.add_argument("distributions", nargs="*", help="Distributions to download (archlinux debian debian-live debian-live-config fedora freebsd kali pfsense proxmox tails ubuntu, or all")
+    parser.add_argument("distributions", nargs="*", help="Distributions to download (archlinux debian debian-live debian-live-config fedora freebsd kali proxmox tails ubuntu, or all")
 
     args = parser.parse_args()
 
@@ -241,7 +216,7 @@ def main():
     if not distributions or "all" in distributions:
         functions = [
             download_debian, download_debian_live, download_tails, download_kali,
-            download_proxmox, download_pfsense, download_freebsd, download_debian_live_config,
+            download_proxmox, download_freebsd, download_debian_live_config,
             download_fedora, download_ubuntu, download_archlinux
         ]
         for func in functions:
@@ -258,8 +233,6 @@ def main():
                 download_kali()
             elif dist == "proxmox":
                 download_proxmox()
-            elif dist == "pfsense":
-                download_pfsense()
             elif dist == "freebsd":
                 download_freebsd()
             elif dist == "debian-live-config":
