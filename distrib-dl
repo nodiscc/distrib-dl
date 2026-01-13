@@ -51,6 +51,7 @@ def run_cmd(cmd):
 
 def download_file(url, dest_dir):
     """Download a file using wget."""
+    print(f'[distrib-dl] downloading {url}')
     cmd = f"wget {wget_opts} --directory-prefix='{dest_dir}/' '{url}'"
     run_cmd(cmd)
 
