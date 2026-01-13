@@ -207,7 +207,7 @@ def download_debian_live_config():
         sig=sig,
         key_url=key,
         key_filename=None,
-        verify_flag=verify
+        verify_flag=False
     )
 
 def download_fedora():
