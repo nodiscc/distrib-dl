@@ -49,7 +49,7 @@ def run_cmd(cmd):
     if return_code != 0:
         raise subprocess.CalledProcessError(return_code, cmd)
 
-def download_file(url, dest_dir, filename):
+def download_file(url, dest_dir):
     """Download a file using wget."""
     cmd = f"wget {wget_opts} --timestamping --show-progress --directory-prefix='{dest_dir}/' '{url}'"
     run_cmd(cmd)
@@ -57,16 +57,16 @@ def download_file(url, dest_dir, filename):
 def download_and_verify(dir, base_url, iso, sums, sig, key, verify_flag):
     """Generic download and verification function."""
     os.makedirs(dir, exist_ok=True)
-    download_file(f"{base_url}/{sums}", dir, sums)
+    download_file(f"{base_url}/{sums}", dir)
     if sig:
-        download_file(f"{base_url}/{sig}", dir, sig)
+        download_file(f"{base_url}/{sig}", dir)
     if key:
-        download_file(key, dir, os.path.basename(key))
+        download_file(key, dir)
 
     if verify_flag and sig:
         verify_signature(dir, sig, sums, key)
 
-    download_file(f"{base_url}/{iso}", dir, iso)
+    download_file(f"{base_url}/{iso}", dir)
 
     if verify_flag:
         print(f"[distrib-dl] Verifying ISO integrity...")
@@ -105,13 +105,13 @@ def download_tails():
     iso_url = f"https://mirrors.wikimedia.org/tails/stable/tails-{config['tails_architecture']}-{config['tails_version']}/tails-{config['tails_architecture']}-{config['tails_version']}.iso"
     key_url = "https://tails.boum.org/tails-signing.key"
     sig_url = f"https://tails.boum.org/torrents/files/tails-{config['tails_architecture']}-{config['tails_version']}.iso.sig"
-    download_file(key_url, dir, "tails-signing.key")
-    download_file(sig_url, dir, "tails-signing.sig")
-    download_file(iso_url, dir, "tails.iso")
+    download_file(key_url, dir)
+    download_file(sig_url, dir)
+    download_file(iso_url, dir)
     if verify:
         run_cmd(f"gpg --import '{dir}/tails-signing.key'")
     if verify:
-        run_cmd(f"gpg --keyid-format 0xlong --verify '{dir}/tails-signing.sig' '{dir}/tails.iso'")
+        run_cmd(f"gpg --keyid-format 0xlong --verify '{dir}/tails-signing.iso.sig' '{dir}/tails.iso'")
 
 def download_kali():
     dir = os.path.join(download_dir, "kali")
@@ -135,9 +135,9 @@ def download_freebsd():
     iso_filename = f"FreeBSD-{config['freebsd_version']}-RELEASE-amd64-memstick.img"
     sums_filename = f"CHECKSUM.SHA512-FreeBSD-{config['freebsd_version']}-RELEASE-amd64"
     keyring_url = "https://docs.freebsd.org/pgpkeys/pgpkeys.txt"
-    download_file(keyring_url, dir, "pgpkeys.txt")
-    download_file(f"{base_url}/{sums_filename}", dir, sums_filename)
-    download_file(f"{base_url}/{iso_filename}", dir, iso_filename)
+    download_file(keyring_url, dir)
+    download_file(f"{base_url}/{sums_filename}", dir)
+    download_file(f"{base_url}/{iso_filename}", dir)
     if verify:
         cmd = f"(cd '{dir}' && sha512sum --ignore-missing -c <(cat '{sums_filename}'))"
         run_cmd(cmd)
@@ -178,9 +178,9 @@ def download_archlinux():
     iso_filename = "archlinux-x86_64.iso"
     sums_url = f"https://archlinux.org/iso/{config['archlinux_version']}/sha256sums.txt"
     sig_url = f"https://geo.mirror.pkgbuild.com/iso/{config['archlinux_version']}/archlinux-x86_64.iso.sig"
-    download_file(sums_url, dir, "sha256sums.txt")
-    download_file(sig_url, dir, "archlinux-x86_64.iso.sig")
-    download_file(f"{base_url}/{iso_filename}", dir, iso_filename)
+    download_file(sums_url, dir)
+    download_file(sig_url, dir)
+    download_file(f"{base_url}/{iso_filename}", dir)
     if verify:
         run_cmd("gpg --auto-key-locate clear,wkd -v --locate-external-key pierre@archlinux.org")
         run_cmd(f"gpg --verify '{dir}/archlinux-x86_64.iso.sig' '{dir}/archlinux-x86_64.iso'")
