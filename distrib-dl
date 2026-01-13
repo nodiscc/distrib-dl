@@ -57,7 +57,8 @@ def download_file(url, dest_dir):
 def download_and_verify(dir, base_url, iso, sums, sig, key_url, key_filename, verify_flag):
     """Generic download and verification function."""
     os.makedirs(dir, exist_ok=True)
-    download_file(f"{base_url}/{sums}", dir)
+    if sums:
+        download_file(f"{base_url}/{sums}", dir)
     if sig:
         download_file(f"{base_url}/{sig}", dir)
     if key_url:
