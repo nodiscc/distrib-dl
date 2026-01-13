@@ -14,7 +14,7 @@ Download and keep up-to-date Linux/BSD distribution ISO images (installers/live 
 
 ## Usage
 
-```bash
+```
 $ ./distrib-dl --help
 usage: distrib-dl [-h] [-c] [-d DIR] [distributions ...]
 
