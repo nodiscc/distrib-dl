@@ -54,17 +54,20 @@ def download_file(url, dest_dir):
     cmd = f"wget {wget_opts} --timestamping --show-progress --directory-prefix='{dest_dir}/' '{url}'"
     run_cmd(cmd)
 
-def download_and_verify(dir, base_url, iso, sums, sig, key, verify_flag):
+def download_and_verify(dir, base_url, iso, sums, sig, key_url, key_filename, verify_flag):
     """Generic download and verification function."""
     os.makedirs(dir, exist_ok=True)
     download_file(f"{base_url}/{sums}", dir)
     if sig:
         download_file(f"{base_url}/{sig}", dir)
-    if key:
-        download_file(key, dir)
+    if key_url:
+        download_file(key_url, dir)
+        key_file = key_filename
+    else:
+        key_file = None
 
     if verify_flag and sig:
-        verify_signature(dir, sig, sums, key)
+        verify_signature(dir, sig, sums, key_file)
 
     download_file(f"{base_url}/{iso}", dir)
 
@@ -76,11 +79,12 @@ def download_and_verify(dir, base_url, iso, sums, sig, key, verify_flag):
 
 def verify_signature(dir, sig_file, sums_file, key_file):
     """Verify GPG signature."""
-    cmd = f"gpg --import '{dir}/{key_file}'" if key_file else ""
-    run_cmd(cmd)
+    if key_file:
+        cmd = f"gpg --import '{os.path.join(dir, key_file)}'"
+        run_cmd(cmd)
     cmd = "gpg --keyserver keyring.debian.org --recv-keys 64E6EA7D 6294BE9B 09EA8AC3"
     run_cmd(cmd)
-    cmd = f"gpg --keyid-format 0xlong --verify '{dir}/{sig_file}' '{dir}/{sums_file}'"
+    cmd = f"gpg --keyid-format 0xlong --verify '{os.path.join(dir, sig_file)}' '{os.path.join(dir, sums_file)}'"
     run_cmd(cmd)
 
 def download_debian():
@@ -111,7 +115,7 @@ def download_tails():
     if verify:
         run_cmd(f"gpg --import '{dir}/tails-signing.key'")
     if verify:
-        run_cmd(f"gpg --keyid-format 0xlong --verify '{dir}/tails-signing.iso.sig' '{dir}/tails.iso'")
+        run_cmd(f"gpg --keyid-format 0xlong --verify '{dir}/tails-{config['tails_architecture']}-{config['tails_version']}.iso.sig' '{dir}/tails-{config['tails_architecture']}-{config['tails_version']}.iso'")
 
 def download_kali():
     dir = os.path.join(download_dir, "kali")
@@ -119,8 +123,9 @@ def download_kali():
     iso = f"kali-linux-{config['kali_version']}-{config['kali_flavour']}-{config['kali_architecture']}.iso"
     sums = "SHA256SUMS"
     sig = "SHA256SUMS.gpg"
-    key = "https://archive.kali.org/archive-key.asc"
-    download_and_verify(dir, base_url, iso, sums, sig, key, verify)
+    key_url = "https://archive.kali.org/archive-key.asc"
+    key_filename = "archive-key.asc"
+    download_and_verify(dir, base_url, iso, sums, sig, key_url, key_filename, verify)
 
 def download_proxmox():
     dir = os.path.join(download_dir, "proxmox")
