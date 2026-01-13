@@ -60,52 +60,61 @@ Options:
 
 ############################
 
-function download_debian() {
-    debian_base_url="https://cdimage.debian.org/debian-cd/current/${debian_architecture}/iso-cd/"
-    debian_iso_filename="debian-${debian_version}-${debian_architecture}-netinst.iso"
-    debian_sums_url="${debian_base_url}/SHA512SUMS"
-    debian_sums_sign_url="${debian_base_url}/SHA512SUMS.sign"
-    if [[ ! -d "$download_dir/debian/" ]]; then mkdir -p "$download_dir/debian/"; fi
-    echo "[distrib-dl] Downloading Debian checksums and signature..."
-    # shellcheck disable=SC2086
-    wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/debian/" "$debian_sums_url"
-    # shellcheck disable=SC2086
-    wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/debian/" "$debian_sums_sign_url"
-    if [[ "$verify" == "true" ]]; then
-        echo "[distrib-dl] Verifying Debian signature..."
-        gpg --verify "$download_dir/debian/SHA512SUMS.sign" "$download_dir/debian/SHA512SUMS"
+download_and_verify() {
+    local dir=$1          # e.g. "$download_dir/debian"
+    local base_url=$2     # base URL for the files
+    local iso=$3          # ISO filename
+    local sums=$4         # checksums file
+    local sig=$5          # signature file (may be empty)
+    local key=$6          # key file (may be empty)
+    local verify=$7       # "true"/"false"
+
+    mkdir -p "$dir"
+
+    echo "[distrib-dl] Downloading $sums and $sig ..."
+    wget $wget_opts --timestamping --show-progress --directory-prefix="$dir/" "$base_url/$sums"
+    [[ -n $sig ]] && wget $wget_opts --timestamping --show-progress --directory-prefix="$dir/" "$base_url/$sig"
+    [[ -n $key ]] && wget $wget_opts --timestamping --show-progress --directory-prefix="$dir/" "$key"
+
+    if [[ $verify == "true" && -n $sig ]]; then
+        echo "[distrib-dl] Verifying signature..."
+        gpg --import "$dir/$(basename "$key")" 2>/dev/null || true
+        gpg --verify "$dir/$(basename "$sig")" "$dir/$(basename "$sums")"
     fi
-    echo "[distrib-dl] Downloading Debian ISO image..."
-    # shellcheck disable=SC2086
-    wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/debian/" "$debian_base_url/$debian_iso_filename"
-    if [[ "$verify" == "true" ]]; then
-        echo "[distrib-dl] Verifying Debian ISO image integrity..."
-        (cd "$download_dir/debian/" && sha512sum --check --ignore-missing <(cat SHA512SUMS))
+
+    echo "[distrib-dl] Downloading ISO image..."
+    wget $wget_opts --timestamping --show-progress --directory-prefix="$dir/" "$base_url/$iso"
+
+    if [[ $verify == "true" ]]; then
+        echo "[distrib-dl] Verifying ISO integrity..."
+        (cd "$dir" && sha${#sums%.*}sum --check --ignore-missing <(cat "$sums"))
     fi
 }
 
+##############
+
+function download_debian() {
+    local dir="$download_dir/debian"
+    download_and_verify \
+        "$dir" \
+        "https://cdimage.debian.org/debian-cd/current/${debian_architecture}/iso-cd/" \
+        "debian-${debian_version}-${debian_architecture}-netinst.iso" \
+        "SHA512SUMS" \
+        "SHA512SUMS.sign" \
+        "" \
+        "$verify"
+}
+
 function download_debian_live() {
-    debian_live_base_url="https://cdimage.debian.org/cdimage/release/current-live/${debian_live_architecture}/iso-hybrid/"
-    debian_live_iso_filename="debian-live-${debian_version}-${debian_live_architecture}-${debian_live_desktop_environment}.iso"
-    debian_live_sums_url="${debian_live_base_url}/SHA512SUMS"
-    debian_live_sums_sign_url="${debian_live_base_url}/SHA512SUMS.sign"
-    if [[ ! -d "$download_dir/debian-live/" ]]; then mkdir -p "$download_dir/debian-live/"; fi
-    echo "[distrib-dl] Downloading Debian Live checksums and signature..."
-    # shellcheck disable=SC2086
-    wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/debian-live/" "$debian_live_sums_url"
-    # shellcheck disable=SC2086
-    wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/debian-live/" "$debian_live_sums_sign_url"
-    if [[ "$verify" == "true" ]]; then
-        echo "[distrib-dl] Verifying Debian Live signature..."
-        gpg --verify "$download_dir/debian-live/SHA512SUMS.sign" "$download_dir/debian-live/SHA512SUMS"
-    fi
-    echo "[distrib-dl] Downloading Debian Live ISO image..."
-    # shellcheck disable=SC2086
-    wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/debian-live/" "$debian_live_base_url/$debian_live_iso_filename"
-    if [[ "$verify" == "true" ]]; then
-        echo "[distrib-dl] Verifying Debian Live ISO image integrity..."
-        (cd "$download_dir/debian-live/" && sha512sum --ignore-missing -c <(cat SHA512SUMS))
-    fi
+    local dir="$download_dir/debian-live"
+    download_and_verify \
+        "$dir" \
+        "https://cdimage.debian.org/cdimage/release/current-live/${debian_live_architecture}/iso-hybrid/" \
+        "debian-live-${debian_version}-${debian_live_architecture}-${debian_live_desktop_environment}.iso" \
+        "SHA512SUMS" \
+        "SHA512SUMS.sign" \
+        "" \
+        "$verify"
 }
 
 function download_tails() {
@@ -134,39 +143,29 @@ function download_tails() {
 }
 
 function download_kali() {
-    kali_base_url="https://cdimage.kali.org/kali-$kali_version/"
-    kali_iso_filename="kali-linux-$kali_version-$kali_flavour-$kali_architecture.iso"
-    kali_key_url="https://archive.kali.org/archive-key.asc"
-    if [[ ! -d "$download_dir/kali/" ]]; then mkdir -p "$download_dir/kali/"; fi
-    echo "[distrib-dl] Downloading Kali checksums, key and signature..."
-    # shellcheck disable=SC2086
-    wget $wget_opts --continue --timestamping --show-progress --directory-prefix="$download_dir/kali/" "$kali_base_url/SHA256SUMS"
-    # shellcheck disable=SC2086
-    wget $wget_opts --continue --show-progress -O "$download_dir/kali/SHA256SUMS.gpg" "$kali_base_url/SHA256SUMS.gpg"
-    # shellcheck disable=SC2086
-    wget $wget_opts --continue --timestamping --show-progress --directory-prefix="$download_dir/kali/" "$kali_key_url"
-    echo "[distrib-dl] INFO: Importing Kali GPG key..."
-    if [[ "$verify" == "true" ]]; then
-        gpg --import "$download_dir/kali/archive-key.asc"
-        echo "[distrib-dl] Verifying Kali signature..."
-        gpg --verify "$download_dir/kali/SHA256SUMS.gpg" "$download_dir/kali/SHA256SUMS"
-    fi
-    echo "[distrib-dl] INFO: Downloading Kali ISO image..."
-    # shellcheck disable=SC2086
-    wget $wget_opts --continue --timestamping --show-progress --directory-prefix="$download_dir/kali/" "$kali_base_url/$kali_iso_filename"
-    if [[ "$verify" == "true" ]]; then
-        echo "[distrib-dl] INFO: Verifying Kali ISO image integrity..."
-        (cd "$download_dir/kali/" && sha256sum --check --ignore-missing <(grep "$kali_iso_filename" SHA256SUMS))
-    fi
+    local dir="$download_dir/kali"
+    download_and_verify \
+        "$dir" \
+        "https://cdimage.kali.org/kali-${kali_version}/" \
+        "kali-linux-${kali_version}-${kali_flavour}-${kali_architecture}.iso" \
+        "SHA256SUMS" \
+        "SHA256SUMS.gpg" \
+        "https://archive.kali.org/archive-key.asc" \
+        "$verify"
 }
 
 function download_proxmox {
     # https://pve.proxmox.com/wiki/Roadmap
     # TODO checksums/gpg verify download
-    if [[ ! -d "$download_dir/proxmox/" ]]; then mkdir -p "$download_dir/proxmox/"; fi
-    proxmox_base_url="https://enterprise.proxmox.com/iso"
-    # shellcheck disable=SC2086
-    wget $wget_opts --continue --timestamping --show-progress --directory-prefix="$download_dir/proxmox/" "$proxmox_base_url/proxmox-ve_$proxmox_version.iso"
+    local dir="$download_dir/proxmox"
+    download_and_verify \
+        "$dir" \
+        "https://enterprise.proxmox.com/iso" \
+        "proxmox-ve_${proxmox_version}.iso" \
+        "" \
+        "" \
+        "" \
+        "false"
 }
 
 function download_pfsense {
@@ -216,87 +215,38 @@ function download_freebsd() {
 }
 
 function download_debian_live_config() {
-    # https://gitlab.com/nodiscc/debian-live-config
-    debian_live_config_base_url="https://github.com/nodiscc/debian-live-config/releases/download/$debian_live_config_version/"
-    debian_live_config_iso_filename="debian-live-config-${debian_live_config_version}-debian-bookworm-amd64.iso"
-    debian_live_config_key_url="${debian_live_config_base_url}/debian-live-config-release.key"
-    debian_live_config_sums_url="${debian_live_config_base_url}/SHA512SUMS"
-    debian_live_config_sums_sign_url="${debian_live_config_base_url}/SHA512SUMS.sign"
-    if [[ ! -d "$download_dir/debian-live-config/" ]]; then mkdir -p "$download_dir/debian-live-config/"; fi
-    echo "[distrib-dl] Downloading debian-live-config checksums and signature..."
-    # shellcheck disable=SC2086
-    wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/debian-live-config/" "$debian_live_config_sums_url"
-    # shellcheck disable=SC2086
-    wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/debian-live-config/" "$debian_live_config_sums_sign_url"
-    # shellcheck disable=SC2086
-    wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/debian-live-config/" "$debian_live_config_key_url"
-    if [[ "$verify" == "true" ]]; then
-        echo "[distrib-dl] Importing debian-live-config GPG key..."
-        gpg --import "$download_dir/debian-live-config/debian-live-config-release.key"
-        echo "[distrib-dl] Verifying debian-live-config signature..."
-        gpg --verify "$download_dir/debian-live-config/SHA512SUMS.sign" "$download_dir/debian-live-config/SHA512SUMS"
-    fi
-    echo "[distrib-dl] Downloading debian-live-config ISO image..."
-    # shellcheck disable=SC2086
-    wget $wget_opts --continue --timestamping --show-progress --directory-prefix="$download_dir/debian-live-config/" "$debian_live_config_base_url/$debian_live_config_iso_filename"
-    if [[ "$verify" == "true" ]]; then
-        echo "[distrib-dl] Verifying debian-live-config ISO image integrity..."
-        (cd "$download_dir/debian-live-config/" && sha512sum -c <(cat SHA512SUMS))
-    fi
+    local dir="$download_dir/debian-live-config"
+    local base_url="https://github.com/nodiscc/debian-live-config/releases/download/$debian_live_config_version/"
+    local iso="debian-live-config-${debian_live_config_version}-debian-bookworm-amd64.iso"
+    local sums="SHA512SUMS"
+    local sig="SHA512SUMS.sign"
+    local key="${base_url}debian-live-config-release.key"
+    download_and_verify "$dir" "$base_url" "$iso" "$sums" "$sig" "$key" "$verify"
 }
 
 
 function download_fedora() {
-    fedora_version_full="${fedora_version_major}-${fedora_version_minor}"
-    fedora_iso_filename="Fedora-Workstation-Live-x86_64-${fedora_version_full}.iso"
-    fedora_iso_url="https://download.fedoraproject.org/pub/fedora/linux/releases/${fedora_version_major}/Workstation/x86_64/iso/${fedora_iso_filename}"
-    fedora_sums_filename="Fedora-Workstation-${fedora_version_major}-${fedora_version_minor}-x86_64-CHECKSUM"
-    fedora_sums_url="https://download.fedoraproject.org/pub/fedora/linux/releases/${fedora_version_major}/Workstation/x86_64/iso/${fedora_sums_filename}"
-    fedora_key_filename="fedora.gpg"
-    fedora_key_url="https://getfedora.org/static/${fedora_key_filename}"
-    if [[ ! -d "$download_dir/fedora/" ]]; then mkdir -p "$download_dir/fedora/"; fi
-    echo "[distrib-dl] Downloading fedora checksums and signature..."
-    # shellcheck disable=SC2086
-    wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/fedora/" "$fedora_sums_url"
-    # shellcheck disable=SC2086
-    wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/fedora/" "$fedora_key_url"
-    if [[ "$verify" == "true" ]]; then
-        echo "[distrib-dl] Importing fedora GPG key..."
-        gpg --import "$download_dir/fedora/$fedora_key_filename"
-        echo "[distrib-dl] Verifying fedora signature..."
-        (cd "$download_dir/fedora/" && gpg --verify-files "$fedora_sums_filename")
-    fi
-    echo "[distrib-dl] Downloading fedora ISO image..."
-    # shellcheck disable=SC2086
-    wget $wget_opts --continue --timestamping --show-progress --directory-prefix="$download_dir/fedora/" "$fedora_iso_url"
-    if [[ "$verify" == "true" ]]; then
-        echo "[distrib-dl] Verifying fedora ISO image integrity..."
-        (cd "$download_dir/fedora" && sha256sum -c "$fedora_sums_filename")
-    fi
+    local dir="$download_dir/fedora"
+    local base_url="https://download.fedoraproject.org/pub/fedora/linux/releases/${fedora_version_major}/Workstation/x86_64/iso"
+    local iso="Fedora-Workstation-Live-x86_64-${fedora_version_major}-${fedora_version_minor}.iso"
+    local sums="Fedora-Workstation-${fedora_version_major}-${fedora_version_minor}-x86_64-CHECKSUM"
+    local key="https://fedoraproject.org/fedora.gpg"
+    download_and_verify "$dir" "$base_url" "$iso" "$sums" "" "$key" "$verify"
 }
 
 function download_ubuntu() {
-    ubuntu_base_url="https://releases.ubuntu.com/${ubuntu_version}"
-    ubuntu_iso_filename="ubuntu-${ubuntu_version}-desktop-${ubuntu_architecture}.iso"
-    ubuntu_sums_url="${ubuntu_base_url}/SHA256SUMS"
-    ubuntu_sums_sign_url="${ubuntu_base_url}/SHA256SUMS.gpg"
-    if [[ ! -d "$download_dir/ubuntu/" ]]; then mkdir -p "$download_dir/ubuntu/"; fi
-    echo "[distrib-dl] Downloading Ubuntu checksums and signature..."
-    # shellcheck disable=SC2086
-    wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/ubuntu/" "$ubuntu_sums_url"
-    # shellcheck disable=SC2086
-    wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/ubuntu/" "$ubuntu_sums_sign_url"
+    local dir="$download_dir/ubuntu"
+    local base_url="https://releases.ubuntu.com/${ubuntu_version}"
+    local iso="ubuntu-${ubuntu_version}-desktop-${ubuntu_architecture}.iso"
+    local sums="SHA256SUMS"
+    local sig="SHA256SUMS.gpg"
+    local key=""
+    download_and_verify "$dir" "$base_url" "$iso" "$sums" "$sig" "$key" "$verify"
+    # Verify signature using keyserver (since no key file provided)
     if [[ "$verify" == "true" ]]; then
         echo "[distrib-dl] Verifying Ubuntu signature..."
         gpg --keyid-format long --keyserver hkp://keyserver.ubuntu.com --recv-keys 0x843938DF228D22F7B3742BC0D94AA3F0EFE21092
         gpg --keyid-format long --verify "$download_dir/ubuntu/SHA256SUMS.gpg" "$download_dir/ubuntu/SHA256SUMS"
-    fi
-    echo "[distrib-dl] Downloading Ubuntu ISO image..."
-    # shellcheck disable=SC2086
-    wget $wget_opts --timestamping --show-progress --directory-prefix="$download_dir/ubuntu/" "$ubuntu_base_url/$ubuntu_iso_filename"
-    if [[ "$verify" == "true" ]]; then
-        echo "[distrib-dl] Verifying Ubuntu ISO image integrity..."
-        (cd "$download_dir/ubuntu/" && sha256sum --check --ignore-missing <(cat SHA256SUMS))
     fi
 }
 
