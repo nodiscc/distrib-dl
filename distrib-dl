@@ -89,10 +89,6 @@ def verify_signature(dir, sig_file, sums_file, key_file):
     if key_file:
         cmd = f"gpg --import '{os.path.join(dir, key_file)}'"
         run_cmd(cmd)
-    cmd = "gpg --keyserver keyring.debian.org --recv-keys 64E6EA7D 6294BE9B 09EA8AC3"
-    run_cmd(cmd)
-    cmd = "gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys D94AA3F0EFE21092"
-    run_cmd(cmd)
     cmd = f"gpg --keyid-format 0xlong --verify '{os.path.join(dir, sig_file)}' '{os.path.join(dir, sums_file)}'"
     run_cmd(cmd)
 
@@ -102,6 +98,10 @@ def download_debian():
     iso = f"debian-{config['debian_version']}-{config['debian_architecture']}-netinst.iso"
     sums = "SHA512SUMS"
     sig = "SHA512SUMS.sign"
+
+    cmd = "gpg --keyserver keyring.debian.org --recv-keys 64E6EA7D 6294BE9B 09EA8AC3"
+    run_cmd(cmd)
+
     download_and_verify(
         dir=dir,
         base_url=base_url,
@@ -236,6 +236,10 @@ def download_ubuntu():
     iso = f"ubuntu-{config['ubuntu_version']}-desktop-{config['ubuntu_architecture']}.iso"
     sums = "SHA256SUMS"
     sig = "SHA256SUMS.gpg"
+
+    cmd = "gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys D94AA3F0EFE21092"
+    run_cmd(cmd)
+
     download_and_verify(
         dir=dir,
         base_url=base_url,
@@ -246,10 +250,6 @@ def download_ubuntu():
         key_filename=None,
         verify_flag=verify
     )
-    if verify:
-        print("[distrib-dl] Verifying Ubuntu signature...")
-        run_cmd("gpg --keyid-format long --keyserver hkp://keyserver.ubuntu.com --recv-keys 0x843938DF228D22F7B3742BC0D94AA3F0EFE21092")
-        run_cmd(f"gpg --keyid-format long --verify '{dir}/SHA256SUMS.gpg' '{dir}/SHA256SUMS'")
 
 def download_archlinux():
     dir = os.path.join(download_dir, "archlinux")
