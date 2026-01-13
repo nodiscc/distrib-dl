@@ -18,7 +18,7 @@ config = {
     "kali_version": "2025.4",
     "kali_flavour": "installer",
     "proxmox_version": "8.4-1",
-    "freebsd_version": "13.2",
+    "freebsd_version": "15.0",
     "debian_live_config_version": "4.2.0",
     "fedora_version_major": "41",
     "fedora_version_minor": "1.4",
