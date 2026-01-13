@@ -30,7 +30,7 @@ config = {
 # Global options
 verify = True
 download_dir = os.getcwd()
-wget_opts = "--no-verbose"
+wget_opts = "--no-verbose --timestamping"
 
 def run_cmd(cmd):
     """Run shell command with real-time output, and handle errors."""
@@ -51,7 +51,7 @@ def run_cmd(cmd):
 
 def download_file(url, dest_dir):
     """Download a file using wget."""
-    cmd = f"wget {wget_opts} --timestamping --show-progress --directory-prefix='{dest_dir}/' '{url}'"
+    cmd = f"wget {wget_opts} --directory-prefix='{dest_dir}/' '{url}'"
     run_cmd(cmd)
 
 def download_and_verify(dir, base_url, iso, sums, sig, key_url, key_filename, verify_flag):
