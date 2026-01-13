@@ -30,7 +30,7 @@ config = {
 # Global options
 verify = True
 download_dir = os.getcwd()
-wget_opts = "--progress=dot:giga --timestamping"
+wget_opts = "--progress=dot:giga --no-verbose --timestamping"
 
 def run_cmd(cmd):
     """Run shell command with real-time output, and handle errors."""
