@@ -98,7 +98,7 @@ def download_debian():
     iso = f"debian-{config['debian_version']}-{config['debian_architecture']}-netinst.iso"
     sums = "SHA512SUMS"
     sig = "SHA512SUMS.sign"
-    download_and_verify(dir, base_url, iso, sums, sig, "", verify)
+    download_and_verify(dir, base_url, iso, sums, sig, None, None, verify)
 
 def download_debian_live():
     dir = os.path.join(download_dir, "debian-live")
@@ -106,7 +106,7 @@ def download_debian_live():
     iso = f"debian-live-{config['debian_version']}-{config['debian_live_architecture']}-{config['debian_live_desktop_environment']}.iso"
     sums = "SHA512SUMS"
     sig = "SHA512SUMS.sign"
-    download_and_verify(dir, base_url, iso, sums, sig, "", verify)
+    download_and_verify(dir, base_url, iso, sums, sig, None, None, verify)
 
 def download_tails():
     dir = os.path.join(download_dir, "tails")
@@ -136,7 +136,7 @@ def download_proxmox():
     dir = os.path.join(download_dir, "proxmox")
     base_url = "https://enterprise.proxmox.com/iso"
     iso = f"proxmox-ve_{config['proxmox_version']}.iso"
-    download_and_verify(dir, base_url, iso, "", "", "", False)
+    download_and_verify(dir, base_url, iso, None, None, None, None, False)
 
 def download_freebsd():
     dir = os.path.join(download_dir, "freebsd")
@@ -162,7 +162,7 @@ def download_debian_live_config():
     sums = "SHA512SUMS"
     sig = "SHA512SUMS.sign"
     key = f"{base_url}debian-live-config-release.key"
-    download_and_verify(dir, base_url, iso, sums, sig, key, verify)
+    download_and_verify(dir, base_url, iso, sums, sig, key, None, verify)
 
 def download_fedora():
     dir = os.path.join(download_dir, "fedora")
@@ -170,7 +170,7 @@ def download_fedora():
     iso = f"Fedora-Workstation-Live-x86_64-{config['fedora_version_major']}-{config['fedora_version_minor']}.iso"
     sums = f"Fedora-Workstation-{config['fedora_version_major']}-{config['fedora_version_minor']}-x86_64-CHECKSUM"
     key = "https://fedoraproject.org/fedora.gpg"
-    download_and_verify(dir, base_url, iso, sums, "", key, verify)
+    download_and_verify(dir, base_url, iso, sums, key, None, verify)
 
 def download_ubuntu():
     dir = os.path.join(download_dir, "ubuntu")
@@ -178,7 +178,7 @@ def download_ubuntu():
     iso = f"ubuntu-{config['ubuntu_version']}-desktop-{config['ubuntu_architecture']}.iso"
     sums = "SHA256SUMS"
     sig = "SHA256SUMS.gpg"
-    download_and_verify(dir, base_url, iso, sums, sig, "", verify)
+    download_and_verify(dir, base_url, iso, sums, sig, None, verify)
     if verify:
         print("[distrib-dl] Verifying Ubuntu signature...")
         run_cmd("gpg --keyid-format long --keyserver hkp://keyserver.ubuntu.com --recv-keys 0x843938DF228D22F7B3742BC0D94AA3F0EFE21092")
