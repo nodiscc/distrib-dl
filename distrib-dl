@@ -163,7 +163,7 @@ function download_kali() {
 function download_proxmox {
     # https://pve.proxmox.com/wiki/Roadmap
     # TODO checksums/gpg verify download
-    if [[ ! -d "$download_dir/kali/" ]]; then mkdir -p "$download_dir/kali/"; fi
+    if [[ ! -d "$download_dir/proxmox/" ]]; then mkdir -p "$download_dir/proxmox/"; fi
     proxmox_base_url="https://enterprise.proxmox.com/iso"
     # shellcheck disable=SC2086
     wget $wget_opts --continue --timestamping --show-progress --directory-prefix="$download_dir/proxmox/" "$proxmox_base_url/proxmox-ve_$proxmox_version.iso"
