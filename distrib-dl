@@ -22,8 +22,8 @@ tails_architecture="amd64"
 tails_version="7.1"
 ### KALI
 kali_architecture="amd64"
-kali_version="2024.4"
-kali_flavour="live" # live/installer
+kali_version="2025.4"
+kali_flavour="installer"
 ### PROXMOX
 # https://www.proxmox.com/en/downloads/proxmox-virtual-environment/iso
 proxmox_version="8.4-1"
