@@ -68,10 +68,10 @@ def download_and_verify(dir, base_url, iso, sums, sig, key_url, key_filename, ve
     else:
         key_file = None
 
+    download_file(f"{base_url}/{iso}", dir)
+
     if verify_flag and sig:
         verify_signature(dir, sig, sums, key_file)
-
-    download_file(f"{base_url}/{iso}", dir)
 
     if verify_flag:
         print(f"[distrib-dl] Verifying ISO integrity...")
@@ -253,19 +253,26 @@ def download_ubuntu():
 
 def download_archlinux():
     dir = os.path.join(download_dir, "archlinux")
-    os.makedirs(dir, exist_ok=True)
-    base_url = f"https://geo.mirror.pkgbuild.com/iso/{config['archlinux_version']}/"
+    base_url = f"https://geo.mirror.pkgbuild.com/iso/{config['archlinux_version']}"
     iso_filename = "archlinux-x86_64.iso"
-    sums_url = f"https://archlinux.org/iso/{config['archlinux_version']}/sha256sums.txt"
-    sig_url = f"https://geo.mirror.pkgbuild.com/iso/{config['archlinux_version']}/archlinux-x86_64.iso.sig"
+    sums_filename = "sha256sums.txt"
+    sig_filename = "archlinux-x86_64.iso.sig"
+    sums_url = f"https://archlinux.org/iso/{config['archlinux_version']}/{sums_filename}"
     download_file(sums_url, dir)
-    download_file(sig_url, dir)
-    download_file(f"{base_url}/{iso_filename}", dir)
+
     if verify:
         run_cmd("gpg --auto-key-locate clear,wkd -v --locate-external-key pierre@archlinux.org")
-        run_cmd(f"gpg --verify '{dir}/archlinux-x86_64.iso.sig' '{dir}/archlinux-x86_64.iso'")
-        cmd = f"(cd '{dir}' && sha256sum --check --ignore-missing <(cat sha256sums.txt))"
-        run_cmd(cmd)
+
+    download_and_verify(
+        dir=dir,
+        base_url=base_url,
+        iso=iso_filename,
+        sums=sums_filename,
+        sig=sig_filename,
+        key_url=None,
+        key_filename=None,
+        verify_flag=verify
+    )
 
 def main():
     parser = argparse.ArgumentParser(description="Download and verify Linux distribution installers")
