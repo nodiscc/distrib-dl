@@ -107,9 +107,9 @@ def download_tails():
     sig_url = f"https://tails.boum.org/torrents/files/tails-{config['tails_architecture']}-{config['tails_version']}.iso.sig"
     download_file(key_url, dir, "tails-signing.key")
     download_file(sig_url, dir, "tails-signing.sig")
+    download_file(iso_url, dir, "tails.iso")
     if verify:
         run_cmd(f"gpg --import '{dir}/tails-signing.key'")
-    download_file(iso_url, dir, "tails.iso")
     if verify:
         run_cmd(f"gpg --keyid-format 0xlong --verify '{dir}/tails-signing.sig' '{dir}/tails.iso'")
 
