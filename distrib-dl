@@ -33,7 +33,7 @@ download_dir = os.getcwd()
 wget_opts = "--no-verbose"
 
 def run_cmd(cmd):
-    """Run shell command and handle errors."""
+    """Run shell command with real-time output, and handle errors."""
     process = subprocess.Popen(
         cmd,
         shell=True,
@@ -71,12 +71,14 @@ def download_and_verify(dir, base_url, iso, sums, sig, key, verify_flag):
     if verify_flag:
         print(f"[distrib-dl] Verifying ISO integrity...")
         algo = "sha" + sums.split("SUMS")[0].replace("SHA", "")
-        cmd = f"(cd '{dir}' && {algo}sum --check --ignore-missing <(cat '{sums}'))"
+        cmd = f"cat '{os.path.join(dir, sums)}' | (cd '{dir}' && {algo}sum --check --ignore-missing)"
         run_cmd(cmd)
 
 def verify_signature(dir, sig_file, sums_file, key_file):
     """Verify GPG signature."""
     cmd = f"gpg --import '{dir}/{key_file}'" if key_file else ""
+    run_cmd(cmd)
+    cmd = "gpg --keyserver keyring.debian.org --recv-keys 64E6EA7D 6294BE9B 09EA8AC3"
     run_cmd(cmd)
     cmd = f"gpg --keyid-format 0xlong --verify '{dir}/{sig_file}' '{dir}/{sums_file}'"
     run_cmd(cmd)
@@ -103,15 +105,11 @@ def download_tails():
     iso_url = f"https://mirrors.wikimedia.org/tails/stable/tails-{config['tails_architecture']}-{config['tails_version']}/tails-{config['tails_architecture']}-{config['tails_version']}.iso"
     key_url = "https://tails.boum.org/tails-signing.key"
     sig_url = f"https://tails.boum.org/torrents/files/tails-{config['tails_architecture']}-{config['tails_version']}.iso.sig"
-    
     download_file(key_url, dir, "tails-signing.key")
     download_file(sig_url, dir, "tails-signing.sig")
-    
     if verify:
         run_cmd(f"gpg --import '{dir}/tails-signing.key'")
-    
     download_file(iso_url, dir, "tails.iso")
-    
     if verify:
         run_cmd(f"gpg --keyid-format 0xlong --verify '{dir}/tails-signing.sig' '{dir}/tails.iso'")
 
@@ -133,16 +131,13 @@ def download_proxmox():
 def download_freebsd():
     dir = os.path.join(download_dir, "freebsd")
     os.makedirs(dir, exist_ok=True)
-    
     base_url = f"https://download.freebsd.org/ftp/releases/amd64/amd64/ISO-IMAGES/{config['freebsd_version']}"
     iso_filename = f"FreeBSD-{config['freebsd_version']}-RELEASE-amd64-memstick.img"
     sums_filename = f"CHECKSUM.SHA512-FreeBSD-{config['freebsd_version']}-RELEASE-amd64"
     keyring_url = "https://docs.freebsd.org/pgpkeys/pgpkeys.txt"
-    
     download_file(keyring_url, dir, "pgpkeys.txt")
     download_file(f"{base_url}/{sums_filename}", dir, sums_filename)
     download_file(f"{base_url}/{iso_filename}", dir, iso_filename)
-    
     if verify:
         cmd = f"(cd '{dir}' && sha512sum --ignore-missing -c <(cat '{sums_filename}'))"
         run_cmd(cmd)
@@ -171,7 +166,6 @@ def download_ubuntu():
     sums = "SHA256SUMS"
     sig = "SHA256SUMS.gpg"
     download_and_verify(dir, base_url, iso, sums, sig, "", verify)
-    
     if verify:
         print("[distrib-dl] Verifying Ubuntu signature...")
         run_cmd("gpg --keyid-format long --keyserver hkp://keyserver.ubuntu.com --recv-keys 0x843938DF228D22F7B3742BC0D94AA3F0EFE21092")
@@ -180,16 +174,13 @@ def download_ubuntu():
 def download_archlinux():
     dir = os.path.join(download_dir, "archlinux")
     os.makedirs(dir, exist_ok=True)
-    
     base_url = f"https://geo.mirror.pkgbuild.com/iso/{config['archlinux_version']}/"
     iso_filename = "archlinux-x86_64.iso"
     sums_url = f"https://archlinux.org/iso/{config['archlinux_version']}/sha256sums.txt"
     sig_url = f"https://geo.mirror.pkgbuild.com/iso/{config['archlinux_version']}/archlinux-x86_64.iso.sig"
-    
     download_file(sums_url, dir, "sha256sums.txt")
     download_file(sig_url, dir, "archlinux-x86_64.iso.sig")
     download_file(f"{base_url}/{iso_filename}", dir, iso_filename)
-    
     if verify:
         run_cmd("gpg --auto-key-locate clear,wkd -v --locate-external-key pierre@archlinux.org")
         run_cmd(f"gpg --verify '{dir}/archlinux-x86_64.iso.sig' '{dir}/archlinux-x86_64.iso'")
@@ -201,7 +192,6 @@ def main():
     parser.add_argument("-c", action="store_true", help="Only check URL, don't download")
     parser.add_argument("-d", dest="dir", help="Specify base download directory")
     parser.add_argument("distributions", nargs="*", help="Distributions to download (archlinux debian debian-live debian-live-config fedora freebsd kali proxmox tails ubuntu, or all")
-
     args = parser.parse_args()
 
     global verify, download_dir, wget_opts
