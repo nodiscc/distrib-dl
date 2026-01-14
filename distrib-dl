@@ -276,7 +276,7 @@ def download_archlinux():
 def main():
     parser = argparse.ArgumentParser(description="""Download and verify Linux distribution installers""")
     parser.add_argument("-c", action="store_true", help="Only check URL, don't download")
-    parser.add_argument("-d", dest="dir", help="Specify base download directory")
+    parser.add_argument("-d", dest="download_dir", help="Specify base download directory")
     parser.add_argument("distributions", nargs="*", help="Distributions to download (archlinux debian debian-live debian-live-config fedora freebsd kali proxmox tails ubuntu, or all)")
     args = parser.parse_args()
 
@@ -285,9 +285,9 @@ def main():
         global VERIFY
         WGET_OPTS = "--spider"
         VERIFY = False
-    if args.dir:
+    if args.download_dir:
         global DOWNLOAD_DIR
-        DOWNLOAD_DIR = args.dir
+        DOWNLOAD_DIR = args.download_dir
 
     distributions = args.distributions
 
