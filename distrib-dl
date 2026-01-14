@@ -59,16 +59,16 @@ def download_and_verify(dest_dir, base_url, iso, sums, sig, key_url, key_filenam
     """Generic download and verification function."""
     os.makedirs(dest_dir, exist_ok=True)
     if sums:
-        download_file(f"{base_url}/{sums}", dir)
+        download_file(f"{base_url}/{sums}", dest_dir)
     if sig:
-        download_file(f"{base_url}/{sig}", dir)
+        download_file(f"{base_url}/{sig}", dest_dir)
     if key_url:
-        download_file(key_url, dir)
+        download_file(key_url, dest_dir)
         key_file = key_filename
     else:
         key_file = None
 
-    download_file(f"{base_url}/{iso}", dir)
+    download_file(f"{base_url}/{iso}", dest_dir)
 
     if verify_flag and sig:
         verify_signature(dest_dir, sig, sums, key_file)
@@ -136,9 +136,9 @@ def download_tails():
     iso_url = f"https://mirrors.wikimedia.org/tails/stable/tails-{config['tails_architecture']}-{config['tails_version']}/tails-{config['tails_architecture']}-{config['tails_version']}.iso"
     key_url = "https://tails.boum.org/tails-signing.key"
     sig_url = f"https://tails.boum.org/torrents/files/tails-{config['tails_architecture']}-{config['tails_version']}.iso.sig"
-    download_file(key_url, dir)
-    download_file(sig_url, dir)
-    download_file(iso_url, dir)
+    download_file(key_url, dest_dir)
+    download_file(sig_url, dest_dir)
+    download_file(iso_url, dest_dir)
     if VERIFY:
         run_cmd(f"gpg --import '{dir}/tails-signing.key'")
         run_cmd(f"gpg --keyid-format 0xlong --verify '{dir}/tails-{config['tails_architecture']}-{config['tails_version']}.iso.sig' '{dir}/tails-{config['tails_architecture']}-{config['tails_version']}.iso'")
@@ -257,7 +257,7 @@ def download_archlinux():
     sums_filename = "sha256sums.txt"
     sig_filename = "archlinux-x86_64.iso.sig"
     sums_url = f"https://archlinux.org/iso/{config['archlinux_version']}/{sums_filename}"
-    download_file(sums_url, dir)
+    download_file(sums_url, dest_dir)
 
     if VERIFY:
         run_cmd("gpg --auto-key-locate clear,wkd -v --locate-external-key pierre@archlinux.org")
