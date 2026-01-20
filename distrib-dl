@@ -20,8 +20,8 @@ config = {
     "proxmox_version": "8.4-1",
     "freebsd_version": "15.0",
     "debian_live_config_version": "4.2.0",
-    "fedora_version_major": "41",
-    "fedora_version_minor": "1.4",
+    "fedora_version_major": "43",
+    "fedora_version_minor": "1.6",
     "ubuntu_architecture": "amd64",
     "ubuntu_version": "22.04.5",
     "archlinux_version": "2026.01.01"
@@ -215,7 +215,7 @@ def download_debian_live_config():
 def download_fedora():
     dest_dir = os.path.join(DOWNLOAD_DIR, "fedora")
     base_url = f"https://download.fedoraproject.org/pub/fedora/linux/releases/{config['fedora_version_major']}/Workstation/x86_64/iso"
-    iso = f"Fedora-Workstation-Live-x86_64-{config['fedora_version_major']}-{config['fedora_version_minor']}.iso"
+    iso = f"Fedora-Workstation-Live-{config['fedora_version_major']}-{config['fedora_version_minor']}.x86_64.iso"
     sums = f"Fedora-Workstation-{config['fedora_version_major']}-{config['fedora_version_minor']}-x86_64-CHECKSUM"
     key = "https://fedoraproject.org/fedora.gpg"
     download_and_verify(
