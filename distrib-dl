@@ -81,7 +81,7 @@ def download_and_verify(dest_dir, base_url, iso, sums, sig, key_url, key_filenam
             algo = "sha256"
         else:
             algo = "sha256"
-        cmd = f"cat '{os.path.join(dest_dir, sums)}' | (cd '{dir}' && {algo}sum --check --ignore-missing)"
+        cmd = f"cat '{os.path.join(dest_dir, sums)}' | (cd '{dest_dir}' && {algo}sum --check --ignore-missing)"
         run_cmd(cmd)
 
 def verify_signature(dest_dir, sig_file, sums_file, key_file):
@@ -141,7 +141,7 @@ def download_tails():
     download_file(iso_url, dest_dir)
     if VERIFY:
         run_cmd(f"gpg --import '{dest_dir}/tails-signing.key'")
-        run_cmd(f"gpg --keyid-format 0xlong --verify '{dest_dir}/tails-{config['tails_architecture']}-{config['tails_version']}.iso.sig' '{dir}/tails-{config['tails_architecture']}-{config['tails_version']}.iso'")
+        run_cmd(f"gpg --keyid-format 0xlong --verify '{dest_dir}/tails-{config['tails_architecture']}-{config['tails_version']}.iso.sig' '{dest_dir}/tails-{config['tails_architecture']}-{config['tails_version']}.iso'")
 
 def download_kali():
     dest_dir = os.path.join(DOWNLOAD_DIR, "kali")
