@@ -141,6 +141,7 @@ def download_tails():
     download_file(iso_url, dest_dir)
     if VERIFY:
         run_cmd(f"gpg --import '{dest_dir}/tails-signing.key'")
+        run_cmd('gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys DBB802B258ACD84F')
         run_cmd(f"gpg --keyid-format 0xlong --verify '{dest_dir}/tails-{config['tails_architecture']}-{config['tails_version']}.iso.sig' '{dest_dir}/tails-{config['tails_architecture']}-{config['tails_version']}.iso'")
 
 def download_kali():
