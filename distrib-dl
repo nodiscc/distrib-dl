@@ -119,6 +119,8 @@ def download_debian_live():
     iso = f"debian-live-{config['debian_version']}-{config['debian_live_architecture']}-{config['debian_live_desktop_environment']}.iso"
     sums = "SHA512SUMS"
     sig = "SHA512SUMS.sign"
+    cmd = "gpg --keyserver hkps://keyring.debian.org --recv-keys DF9B9C49EAA9298432589D76DA87E80D6294BE9B"
+    run_cmd(cmd)
     download_and_verify(
         dest_dir=dest_dir,
         base_url=base_url,
