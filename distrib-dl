@@ -13,7 +13,7 @@ config = {
     "debian_live_architecture": "amd64",
     "debian_live_desktop_environment": "xfce",
     "tails_architecture": "amd64",
-    "tails_version": "7.4",
+    "tails_version": "7.4.1",
     "kali_architecture": "amd64",
     "kali_version": "2025.4",
     "kali_flavour": "installer",
