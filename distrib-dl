@@ -24,7 +24,7 @@ config = {
     "fedora_version_minor": "1.6",
     "ubuntu_architecture": "amd64",
     "ubuntu_version": "22.04.5",
-    "archlinux_version": "2026.01.01"
+    "archlinux_version": "2026.02.01"
 }
 
 # Global options
