@@ -9,7 +9,7 @@ import argparse
 # Configuration
 config = {
     "debian_architecture": "amd64",
-    "debian_version": "13.3.0",
+    "debian_version": "13.4.0",
     "debian_live_architecture": "amd64",
     "debian_live_desktop_environment": "xfce",
     "tails_architecture": "amd64",
