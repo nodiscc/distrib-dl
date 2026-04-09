@@ -1,6 +1,0 @@
-test:
-  script:
-  - apt update -qy && apt -y install python3-venv wget
-  - export LC_ALL=C.UTF-8
-  - export LANG=C.UTF-8
-  - make tests

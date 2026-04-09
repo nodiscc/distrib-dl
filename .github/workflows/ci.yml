@@ -1,0 +1,20 @@
+name: CI
+
+on:
+  push:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt update -qy
+          sudo apt -y install python3-venv wget gnupg
+      - name: Set locale
+        run: |
+          export LC_ALL=C.UTF-8
+          export LANG=C.UTF-8
+      - name: Run tests
+        run: make tests
