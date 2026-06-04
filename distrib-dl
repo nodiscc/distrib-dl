@@ -13,7 +13,7 @@ config = {
     "debian_live_architecture": "amd64",
     "debian_live_desktop_environment": "xfce",
     "tails_architecture": "amd64",
-    "tails_version": "7.8",
+    "tails_version": "7.8.1",
     "kali_architecture": "amd64",
     "kali_version": "2025.4",
     "kali_flavour": "installer",
@@ -135,7 +135,7 @@ def download_debian_live():
 def download_tails():
     dest_dir = os.path.join(DOWNLOAD_DIR, "tails")
     os.makedirs(dest_dir, exist_ok=True)
-    iso_url = f"https://mirrors.wikimedia.org/tails/stable/tails-{config['tails_architecture']}-{config['tails_version']}/tails-{config['tails_architecture']}-{config['tails_version']}.iso"
+    iso_url = f"https://download.tails.net/tails/stable/tails-{config['tails_architecture']}-{config['tails_version']}/tails-{config['tails_architecture']}-{config['tails_version']}.iso"
     key_url = "https://tails.boum.org/tails-signing.key"
     sig_url = f"https://tails.boum.org/torrents/files/tails-{config['tails_architecture']}-{config['tails_version']}.iso.sig"
     download_file(key_url, dest_dir)
