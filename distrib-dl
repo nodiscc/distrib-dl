@@ -15,7 +15,7 @@ config = {
     "tails_architecture": "amd64",
     "tails_version": "7.9.1",
     "kali_architecture": "amd64",
-    "kali_version": "2025.4",
+    "kali_version": "2026.2",
     "kali_flavour": "installer",
     "proxmox_version": "8.4-1",
     "freebsd_version": "15.0",
