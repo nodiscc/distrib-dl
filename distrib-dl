@@ -13,7 +13,7 @@ config = {
     "debian_live_architecture": "amd64",
     "debian_live_desktop_environment": "xfce",
     "tails_architecture": "amd64",
-    "tails_version": "7.10",
+    "tails_version": "7.11",
     "kali_architecture": "amd64",
     "kali_version": "2026.2",
     "kali_flavour": "installer",
@@ -137,7 +137,7 @@ def download_tails():
     os.makedirs(dest_dir, exist_ok=True)
     iso_url = f"https://download.tails.net/tails/stable/tails-{config['tails_architecture']}-{config['tails_version']}/tails-{config['tails_architecture']}-{config['tails_version']}.iso"
     key_url = "https://tails.boum.org/tails-signing.key"
-    sig_url = f"https://tails.boum.org/torrents/files/tails-{config['tails_architecture']}-{config['tails_version']}.iso.sig"
+    sig_url = f"https://download.tails.net/tails/stable/tails-{config['tails_architecture']}-{config['tails_version']}/tails-{config['tails_architecture']}-{config['tails_version']}.iso.sig"
     download_file(key_url, dest_dir)
     download_file(sig_url, dest_dir)
     download_file(iso_url, dest_dir)
